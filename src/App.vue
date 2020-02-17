@@ -24,6 +24,7 @@
     <div id="left">
       <div class="top">
         <h1 style='text-align: center; border-bottom: 1px solid; width: 100%; padding: 5px 10px;box-sizing: border-box;'>DoDone</h1>
+        <div :class="{project: true, current: i.current}" v-for="(i, k) in 10" :key="k">{{i}} tes dfasdfsadfsdaf stsasdfasdfasdf</div>
       </div>
     </div>
     <div id="right">
@@ -105,4 +106,17 @@ li{
   height: 100%;
   flex-basis: 90%;
 }
+.project{
+  text-align: center;
+  border-bottom: 1px solid;
+  padding: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  }
+  .project:hover{
+    background-color:#F00;
+    }
+  .project > .current{
+    background-color:#CCC;
+    }
 </style>
