@@ -24,7 +24,7 @@
     <div id="left">
       <div class="top">
         <h1 style='text-align: center; border-bottom: 1px solid; width: 100%; padding: 5px 10px;box-sizing: border-box;'>DoDone</h1>
-        <div :class="{project: true, current: i.current}" v-for="(i, k) in 10" :key="k">{{i}} tes dfasdfsadfsdaf stsasdfasdfasdf</div>
+        <div :class="{project: true, current: i == current}" @click="current = i" v-for="(i, k) in 10" :key="k">tes dfasdfsadfsdaf stsasdfasdfasdf</div>
       </div>
     </div>
     <div id="right">
@@ -48,6 +48,10 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class App extends Vue {
   private items: object[] = [];
   private inp = "";
+  private current = 0;
+  private projects = [
+    {}
+  ]
 
   /*
   private save(){
@@ -87,7 +91,19 @@ body{
   height: 100%;
   width: 100%;
   overflow: hidden;
-}
+  }
+  #left{
+    flex: 1;
+    height: 100%;
+    flex-basis: 20%;
+    }
+  #right{
+    background-color:#F0F;
+    flex: 1;
+    height: 100%;
+    flex-basis: 90%;
+    }
+
 li{
   cursor: pointer;
   user-select: none;
@@ -95,26 +111,19 @@ li{
 .done{
   text-decoration: line-through;
 }
-#left{
-  flex: 1;
-  height: 100%;
-  flex-basis: 20%;
-}
-#right{
-  background-color:#F0F;
-  flex: 1;
-  height: 100%;
-  flex-basis: 90%;
-}
+.current{
+  background-color:#CCC !important;
+  }
 .project{
-  text-align: center;
-  border-bottom: 1px solid;
+  /* text-align: center; */
+  border-bottom: #CCC 1px solid;
   padding: 10px;
   cursor: pointer;
+  user-select: none;
   box-sizing: border-box;
   }
   .project:hover{
-    background-color:#F00;
+    background-color:#EEE;
     }
   .project > .current{
     background-color:#CCC;
