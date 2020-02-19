@@ -1,35 +1,36 @@
 <template>
   <div id="app">
-    <!--
-    <h1>DoDone</h1>
-    <div>
-      <span @click="save">Save</span>
-    </div>
-    <div>
-      <form @submit="add" action="">
-        <input v-model="inp" type="text">
-        <input type="submit" value="add" />
-      </form>
-    </div>
-    <div>
-      <ul>
-        <li
-          v-for="(i, k) in items"
-          :key="k"
-          :class="{done: i.done}"
-          @click="i.done = !i.done">{{i.txt}} - {{i.time}}</li>
-      </ul>
-    </div>
-    -->
     <div id="left">
       <div class="top">
-        <h1 style='text-align: center; border-bottom: 1px solid; width: 100%; padding: 5px 10px;box-sizing: border-box;'>DoDone</h1>
-        <div :class="{project: true, current: i == current}" @click="current = i" v-for="(i, k) in 10" :key="k">tes dfasdfsadfsdaf stsasdfasdfasdf</div>
+        <h1 id="logo">DoDone</h1>
+        <div v-if="projects.length">
+          <div :class="{project: true, current: k == current}" @click="current = k" v-for="(project, k) in projects" :key="k">{{project.title || project.tempTitle}}</div>
+        </div>
+        <div class="project" @click="addProject()">+ add</div>
       </div>
     </div>
     <div id="right">
-      <div class="top">
-
+      <div v-if="projects.length">
+        <div class="top">
+          <div id="list_title">
+            <h2 v-if="projects[current].title">{{projects[current].title}}</h2>
+            <form v-else @submit.prevent="setProjectTitle()">
+              <input id="project_title_inp" autocomplete="off" v-model="titleInp" :placeholder="projects[current].tempTitle" />
+            </form>
+          </div>
+          <div id="list_container">
+            <form v-if="projects[current].title" @submit.prevent="addProjectItem()">
+              <input id="item_inp" autocomplete="off" v-model="itemInp" placeholder="add new item" />
+            </form>
+            <ul>
+              <li
+                v-for="(i, k) in projects[current].items"
+                :key="k"
+                :class="{done: i.done}"
+                @click="i.done = !i.done">{{i.txt}} - {{new moment(i.date).format('MM/DD/YYYY')}}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -37,37 +38,78 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-// import HelloWorld from './components/HelloWorld.vue';
 // import moment from 'moment';
 
+class Project{
+  public items = [];
+  public id !: symbol;
+  public title = "";
+  public projects = [];
+  public tempTitle = "new project"
+
+  constructor(title = '', items = []){
+    this.title = title;
+    this.id = Symbol();
+
+    if(items.length){
+      const date = new Date();
+      for(const item of items){
+        this.createItem(item, date);
+      }
+    }
+  }
+
+  public setTitle(title: string){
+    this.title = title;
+  }
+
+  public createItem(text: string, date: object){
+    this.items.push({
+      txt: text,
+      done: false,
+      date: date || new Date()
+    })
+  }
+}
+
 @Component({
-  components: {
-    // HelloWorld,
-  },
 })
 export default class App extends Vue {
-  private items: object[] = [];
   private inp = "";
   private current = 0;
-  private projects = [
-    {}
-  ]
+  private projects: object[] = [];
+  private titleInp = "";
+  private itemInp = "";
 
   /*
-  private save(){
-
+  private mounted(){
+    const items = [];
+    let p;
+    for(let i = 0; i < 100; i++){
+      items.push('test');
+      if(i == 99){
+        p = new Project('test', items);
+        this.projects.push(p)
+      }
+    }
   }
   */
 
-  private add(e: any){
-    e.preventDefault();
+  public addProjectItem(){
+    this.projects[this.current].createItem(this.itemInp);
+    this.itemInp = '';
+  }
 
-    this.items.push({
-      txt: this.inp,
-      done: false,
-      time: new Date()
-    });
-    this.inp = "";
+  public setProjectTitle(){
+    this.projects[this.current].setTitle(this.titleInp);
+    this.titleInp = '';
+  }
+
+  public addProject(){
+    const project = new Project();
+
+    this.projects.push(project);
+    this.current++;
   }
 }
 </script>
@@ -83,6 +125,13 @@ html{
 body{
   height: 100%;
 }
+#logo{
+  text-align: center;
+  border-bottom: 1px solid;
+  width: 100%;
+  padding: 5px 10px;
+  box-sizing: border-box;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -95,10 +144,12 @@ body{
   #left{
     flex: 1;
     height: 100%;
+    overflow-y: auto;
     flex-basis: 20%;
     }
   #right{
     background-color:#F0F;
+    overflow-y: auto;
     flex: 1;
     height: 100%;
     flex-basis: 90%;
@@ -107,6 +158,8 @@ body{
 li{
   cursor: pointer;
   user-select: none;
+  border-bottom: 1px solid;
+  padding: 20px 0px;
 }
 .done{
   text-decoration: line-through;
@@ -117,7 +170,7 @@ li{
 .project{
   /* text-align: center; */
   border-bottom: #CCC 1px solid;
-  padding: 10px;
+  padding: 20px;
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
@@ -128,4 +181,25 @@ li{
   .project > .current{
     background-color:#CCC;
     }
+#list_title{
+  border-bottom: 1px dashed;
+  padding: 10px;
+}
+#list_container{
+  padding: 0px 30px;
+}
+
+#project_title_inp{
+
+  padding:5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#item_inp{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  margin: 10px 0px;
+}
 </style>
