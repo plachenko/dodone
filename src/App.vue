@@ -22,6 +22,7 @@
         </div>
         <div>
           <div id="addbtn" class="project" @click="addProject()">+ New list</div>
+          <div class="project" @click="loadGHIssues()">GH issues</div>
           <div class="project" @click="clear()">clear</div>
           <div class="project" @click="save()">save</div>
         </div>
@@ -134,6 +135,23 @@ export default class App extends Vue {
       this.projects[this.current].createItem(this.itemInp);
       this.itemInp = '';
     }
+  }
+
+  public loadGHIssues(){
+    fetch('https://api.github.com/repos/plachenko/stirlingweather/issues')
+      .then(response => response.json())
+      .then(data => {
+        const issues = [];
+        for(const item of data){
+          let done = false;
+          if(item.closed_at){
+            done = true;
+          }
+          issues.push({txt: item.title, done: done, date: item.created_at});
+        }
+        this.projects.push(new Project('GH issues', issues))
+      })
+      .catch(error => console.error(error));
   }
 
   public clear(){
