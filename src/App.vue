@@ -3,7 +3,10 @@
     <div id="left">
       <div id="left_cont">
         <div id="left_top">
-          <h1 id="logo">DoDone</h1>
+          <div>
+            <h1 id="logo">DoDoneDidr</h1>
+            <!-- <div>...</div> -->
+          </div>
           <div id="proj_search" v-if="projectsWithTitle">
             <input type="search" v-model="projSearch" placeholder="Search" />
           </div>
@@ -19,6 +22,7 @@
         </div>
         <div>
           <div id="addbtn" class="project" @click="addProject()">+ New list</div>
+          <div class="project" @click="clear()">clear</div>
           <div class="project" @click="save()">save</div>
         </div>
       </div>
@@ -68,7 +72,7 @@ import { Component, Vue } from 'vue-property-decorator';
 // import moment from 'moment';
 
 class Project{
-  public items = [];
+  public items: object[] = [];
   public id !: symbol;
   public title = "";
   public proj_search = "";
@@ -80,10 +84,7 @@ class Project{
     this.id = Symbol();
 
     if(items.length){
-      const date = new Date();
-      for(const item of items){
-        this.createItem(item, date);
-      }
+      this.items = items;
     }
   }
 
@@ -92,11 +93,13 @@ class Project{
   }
 
   public createItem(text: string, date: object){
-    this.items.push({
-      txt: text as string,
-      done: false as boolean,
-      date: date || new Date() as object
-    })
+    const item = {
+      txt: text,
+      done: false,
+      date: date || new Date()
+    }
+
+    this.items.push(item);
   }
 }
 
@@ -105,7 +108,7 @@ class Project{
 export default class App extends Vue {
   private inp = "";
   private current = 0;
-  private projects: object[] = [];
+  private projects: any[] = [];
   private projSearch = "";
   private titleInp = "";
   private itemInp = "";
@@ -120,6 +123,12 @@ export default class App extends Vue {
     return this.projects.some(i => i.title.length)
   }
 
+  private mounted(){
+    if(localStorage.getItem('projects')){
+      this.load();
+    }
+  }
+
   public addProjectItem(){
     if(this.itemInp){
       this.projects[this.current].createItem(this.itemInp);
@@ -127,8 +136,25 @@ export default class App extends Vue {
     }
   }
 
+  public clear(){
+    this.titleInp = "";
+    this.itemInp = "";
+    this.projects = [];
+    localStorage.clear();
+  }
+
+  public load(){
+    this.current = 0;
+    const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
+    for(const proj of savedProjects){
+      this.projects.push(new Project(proj.title, proj.items));
+    }
+  }
+
   public save(){
-    console.log('saving...');
+    if(this.projectsWithTitle){
+      localStorage.setItem('projects', JSON.stringify(this.projects));
+    }
   }
 
   public setProjectTitle(){
