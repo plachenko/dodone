@@ -1,7 +1,7 @@
 <template>
   <div>
-    <DDSearch @searchEvt="search" />
     <div v-if="intProjects.length">
+      <DDSearch @searchEvt="search" />
       <div
         v-for="(project, k) in searchResult"
         @click="selectProject(k)"
@@ -48,7 +48,7 @@ export default class DDProjList extends Vue {
 
   @Watch('projSearch')
   onChange(val: string){
-    this.$emit('searchEvt')
+    this.$emit('searchEvt');
   }
 
   get searchResult(){
@@ -58,7 +58,7 @@ export default class DDProjList extends Vue {
   }
 
   public setProjectTitle(){
-    this.$emit('projectAdd', )
+    this.$emit('projectAdd');
   }
 
   public addProject(){
@@ -70,7 +70,7 @@ export default class DDProjList extends Vue {
 
   private mounted(){
     this.intProjects = this.projects;
-    console.log(this.intProjects);
+    // console.log(this.intProjects);
   }
 
   private selectProject(e: number){

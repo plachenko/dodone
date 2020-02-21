@@ -2,7 +2,11 @@
   <div id="app">
     <div id="left">
       <DDTop @toggleMenu="show = !show" />
-      <DDProjList @projectAdd="addProject" :projects="projects" :class="{hide: !show}" :current="current" />
+      <DDProjList
+        @projectAdd="addProject"
+        :projects="projects"
+        :class="{hide: !show}"
+        :current="current" />
     </div>
     <div id="right">
 
@@ -99,6 +103,26 @@ import DDProjList from './components/DDProjList.vue';
   }
 })
 export default class App extends Vue {
+  private show = false;
+  private projects: any[] = [];
+  private current = 0;
+
+  private mounted(){
+    console.log(this.$test);
+    for(let i = 0; i < 100; i++){
+      this.projects.push(new DDProject('test'));
+    }
+    /*
+    if(localStorage.getItem('projects')){
+      this.load();
+    }
+    */
+  }
+
+  public addProject(){
+    this.projects.push(new DDProject());
+  }
+  /*
   private inp = "";
   private current = 0;
   private projects: any[] = [];
@@ -240,7 +264,7 @@ export default class App extends Vue {
     this.projects[this.current].setTitle(this.titleInp);
     this.titleInp = '';
   }
-
+  */
 }
 </script>
 
@@ -273,7 +297,7 @@ export default class App extends Vue {
     flex-flow: row;
     }
     #left{
-      flex-basis: 20%;
+      flex-basis: 25%;
       border-right: 1px solid;
       }
       .show_btn{
@@ -357,7 +381,6 @@ export default class App extends Vue {
   #right{
     flex: 1;
     height: 100%;
-    flex-basis: 90%;
     min-width: 350px;
     overflow: auto;
     }
