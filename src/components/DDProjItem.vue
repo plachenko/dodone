@@ -53,11 +53,11 @@ export default class DDProjItem extends Vue{
     .inner_inp{
       padding: 10px;
       }
-    .inner_inp input{
-      padding: 10px;
-      width: 100%;
-      box-sizing: border-box;
-      }
+      .inner_inp input{
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        }
 
 .proj_title{
   display: block;

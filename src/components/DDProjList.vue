@@ -17,7 +17,7 @@
     <div
       v-if="!adding"
       @click="addProject()"
-      class="project">+ New list</div>
+      class="btn add_btn">+ New list</div>
   </div>
 </template>
 
@@ -95,4 +95,9 @@ export default class DDProjList extends Vue {
     padding: 10px;
     box-sizing: border-box;
     }
+
+.add_btn{
+  text-align: center;
+  padding: 20px 0px;
+  }
 </style>
