@@ -1,49 +1,41 @@
 <template>
-  <div style="flex:1; height: 100%;">
-    <div v-if="intProjects.length">
+  <div style="flex:1;">
+    <div v-if="intProjects">
       <DDSearch @searchEvt="search" />
-      <div style="overflow-y: auto; background-color:#F00; flex: 1; height: 100%;">
-        <!--
-        <div
+
+      <div style="overflow-y: auto;">
+        <DDProjItem
+          @setTitle="setProjectTitle($event)"
+          @selected="current = k"
           v-for="(project, k) in searchResult"
-          @click="selectProject(k)"
           :key="k"
-          :class="{ project: true, current: k == current, temp: !project.title }">
-
-          <div v-if="adding">
-            <form @submit.prevent="setProjectTitle()">
-              <input type="text" autocomplete="off" v-model="titleInp" :placeholder="intProjects[current].tempTitle" />
-              <input type="submit" />
-            </form>
-            <input type="text">
-          </div>
-          <div v-else>
-            <span class="proj_title">{{project.title || project.tempTitle}}</span>
-            <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
-          </div>
-        </div>
-        -->
-
+          :project="project"
+          :class="{ current: k == current }" />
       </div>
+
     </div>
-    <div class="project" @click="addProject()" v-if="!adding">+ New list</div>
+    <div
+      v-if="!adding"
+      @click="addProject()"
+      class="project">+ New list</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import DDSearch from './DDSearch.vue';
+import DDProjItem from './DDProjItem.vue';
 // import EventBus from '../eventbus';
 
 @Component({
   components: {
-    DDSearch
+    DDSearch,
+    DDProjItem
   }
 })
 export default class DDProjList extends Vue {
   private intProjects = [];
   private projSearch = "";
-  private titleInp = "";
   private current = 0;
   private adding = false;
 
@@ -61,15 +53,19 @@ export default class DDProjList extends Vue {
     })
   }
 
-  public setProjectTitle(){
-    this.$emit('projectAdd');
+  public setProjectTitle(title: string){
+    const _title = title ? title : 'untitled';
+
+    this.adding = false;
+    this.$emit('projectAdd', _title);
   }
 
   public addProject(){
-    this.projSearch = "";
-    this.intProjects.push({});
-    this.current = this.projects.length-1;
+    // this.projSearch = "";
+    // this.intProjects.push({});
+    // this.current = this.projects.length-1;
     this.adding = true;
+    this.$emit('projectAdd');
   }
 
   private mounted(){
@@ -78,7 +74,9 @@ export default class DDProjList extends Vue {
   }
 
   private selectProject(e: number){
+    console.log('test');
     this.current = e;
+    console.log(e);
   }
 
   private search(e: string){
