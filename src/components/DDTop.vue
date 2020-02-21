@@ -29,5 +29,6 @@ export default class DDTop extends Vue {
   user-select: none;
   border-left: 1px solid;
   padding: 20px 20px 10px 20px;
+  font-weight: bold;
   }
 </style>

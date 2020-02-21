@@ -1,24 +1,28 @@
 <template>
-  <div>
+  <div style="flex:1; height: 100%;">
     <div v-if="intProjects.length">
       <DDSearch @searchEvt="search" />
-      <div
-        v-for="(project, k) in searchResult"
-        @click="selectProject(k)"
-        :key="k"
-        :class="{ project: true, current: k == current, temp: !project.title }">
+      <div style="overflow-y: auto; background-color:#F00; flex: 1; height: 100%;">
+        <!--
+        <div
+          v-for="(project, k) in searchResult"
+          @click="selectProject(k)"
+          :key="k"
+          :class="{ project: true, current: k == current, temp: !project.title }">
 
-        <div v-if="adding">
-          <form @submit.prevent="setProjectTitle()">
-            <input type="text" autocomplete="off" v-model="titleInp" :placeholder="intProjects[current].tempTitle" />
-            <input type="submit" />
-          </form>
-          <input type="text">
+          <div v-if="adding">
+            <form @submit.prevent="setProjectTitle()">
+              <input type="text" autocomplete="off" v-model="titleInp" :placeholder="intProjects[current].tempTitle" />
+              <input type="submit" />
+            </form>
+            <input type="text">
+          </div>
+          <div v-else>
+            <span class="proj_title">{{project.title || project.tempTitle}}</span>
+            <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
+          </div>
         </div>
-        <div v-else>
-          <span class="proj_title">{{project.title || project.tempTitle}}</span>
-          <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
-        </div>
+        -->
 
       </div>
     </div>

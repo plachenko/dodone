@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="left">
+    <div id="left" style="background-color:#F00;">
       <DDTop @toggleMenu="show = !show" />
       <DDProjList
         @projectAdd="addProject"
@@ -108,7 +108,6 @@ export default class App extends Vue {
   private current = 0;
 
   private mounted(){
-    console.log(this.$test);
     for(let i = 0; i < 100; i++){
       this.projects.push(new DDProject('test'));
     }
@@ -297,6 +296,7 @@ export default class App extends Vue {
     flex-flow: row;
     }
     #left{
+      height: 100%;
       flex-basis: 25%;
       border-right: 1px solid;
       }
@@ -316,7 +316,6 @@ export default class App extends Vue {
   overflow: hidden;
   }
   #left{
-    height: 100%;
     min-width: 170px;
     }
       #addbtn{
