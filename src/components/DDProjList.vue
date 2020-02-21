@@ -1,11 +1,11 @@
 <template>
-  <div style="flex:1;">
+  <div>
     <div v-if="intProjects">
       <DDSearch @searchEvt="search" />
 
-      <div style="overflow-y: auto;">
+      <div style="overflow-y: auto; flex: 1;">
         <DDProjItem
-          @setTitle="setProjectTitle($event)"
+          @setNewTitle="setTitle($event)"
           @selected="current = k"
           v-for="(project, k) in searchResult"
           :key="k"
@@ -15,6 +15,7 @@
 
     </div>
     <div
+      style="height: 100px;"
       v-if="!adding"
       @click="addProject()"
       class="btn add_btn">+ New list</div>
@@ -53,19 +54,19 @@ export default class DDProjList extends Vue {
     })
   }
 
-  public setProjectTitle(title: string){
+  public setTitle(title: string){
     const _title = title ? title : 'untitled';
+    this.$emit('setNewTitle', title);
 
     this.adding = false;
-    this.$emit('projectAdd', _title);
   }
 
   public addProject(){
-    // this.projSearch = "";
+    this.projSearch = "";
     // this.intProjects.push({});
     // this.current = this.projects.length-1;
     this.adding = true;
-    this.$emit('projectAdd');
+    this.$emit('addProject');
   }
 
   private mounted(){
@@ -99,5 +100,6 @@ export default class DDProjList extends Vue {
 .add_btn{
   text-align: center;
   padding: 20px 0px;
+  font-weight: bold;
   }
 </style>

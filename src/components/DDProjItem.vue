@@ -2,7 +2,7 @@
   <div class="projectItem">
 
     <div v-if="!project.title" class="inner_inp">
-      <form @submit.prevent="$emit('setTitle', titleInp)">
+      <form @submit.prevent="$emit('setNewTitle', titleInp)">
         <input
           type="text"
           autocomplete="off"

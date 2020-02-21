@@ -1,9 +1,17 @@
 <template>
   <div id="app">
-    <div id="left">
+    <div id="left" style="display: flex; flex-flow: column;">
+      <!--
+      <div style="height: 100px; background-color:#F00"></div>
+      <div style="flex: 1; width: 100%; background-color:#0F0; overflow: auto;">
+        <div style="height: 1000px; width: 20px; background-color:#FF0;"></div>
+      </div>
+      <div style="height: 100px; background-color:#00F"></div>
+      -->
       <DDTop @toggleMenu="show = !show" />
       <DDProjList
-        @projectAdd="addProject"
+        @addProject="addProject()"
+        @setNewTitle="setTitle($event)"
         :projects="projects"
         :class="{hide: !show}"
         :current="current" />
@@ -91,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import DDProject from './util/DDProject';
 import DDTop from './components/DDTop.vue';
 import DDProjList from './components/DDProjList.vue';
@@ -107,7 +115,16 @@ export default class App extends Vue {
   private projects: any[] = [];
   private current = 0;
 
+  @Watch('projects', {deep: true})
+  onProjectChange(val: object){
+    console.log(val);
+  }
+
   private mounted(){
+    const items = [];
+    for(let i = 0; i < 10; i++){
+      items.push({txt: 'test'});
+    }
     for(let i = 0; i < 10; i++){
       this.projects.push(new DDProject('test'));
     }
@@ -120,6 +137,10 @@ export default class App extends Vue {
 
   public addProject(){
     this.projects.push(new DDProject());
+  }
+
+  public setTitle(e: string){
+    this.projects[this.projects.length-1].title = e;
   }
   /*
   private inp = "";
@@ -305,6 +326,16 @@ export default class App extends Vue {
       }
 }
 
+.btn{
+  cursor: pointer;
+  }
+  .btn:hover{
+    background-color:#EEE;
+    }
+
+.current{
+  background-color:#EEE;
+  }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -317,40 +348,8 @@ export default class App extends Vue {
   }
   #left{
     min-width: 170px;
+    flex: 1;
     }
-      #addbtn{
-        text-align: center;
-        border-top: #EEE 2px solid;
-        font-weight: bold;
-        }
-
-    #project_list{
-      flex: 1;
-      width: 100%;
-      overflow-y: auto;
-      }
-
-    #left_cont{
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      }
-
-      .temp{
-        color:#AAA;
-        }
-
-    .btn{
-      cursor: pointer;
-      }
-      .btn:hover{
-        background-color:#EEE;
-        }
-
-
-      .current{
-        background-color:#EEE;
-        }
 
   #right{
     flex: 1;
