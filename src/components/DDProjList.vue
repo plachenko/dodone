@@ -1,92 +1,73 @@
 <template>
-  <div>
-    <div v-if="intProjects">
-      <DDSearch @searchEvt="search" />
-
-      <div style="overflow-y: auto; flex: 1;">
-        <DDProjItem
-          @setNewTitle="setTitle($event)"
-          @selected="current = k"
-          v-for="(project, k) in searchResult"
-          :key="k"
-          :project="project"
-          :class="{ current: k == current }" />
-      </div>
-
-    </div>
-    <div
-      style="height: 100px;"
-      v-if="!adding"
-      @click="addProject()"
-      class="btn add_btn">+ New list</div>
+  <div id="projListContainer">
+    <DDProjItem
+      @setNewTitle="setTitle($event)"
+      @selected="selectItem(k)"
+      v-for="(project, k) in projects"
+      ref="projItem"
+      :key="k"
+      :project="project"
+      :class="{ current: k == current }" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import DDSearch from './DDSearch.vue';
 import DDProjItem from './DDProjItem.vue';
-// import EventBus from '../eventbus';
+import DDProject from '../util/DDProject';
 
 @Component({
   components: {
-    DDSearch,
     DDProjItem
   }
 })
 export default class DDProjList extends Vue {
-  private intProjects = [];
-  private projSearch = "";
-  private current = 0;
-  private adding = false;
+
+  @Prop({default: 0})
+  current!: number;
 
   @Prop({default: []})
   projects!: any[];
+
 
   @Watch('projSearch')
   onChange(val: string){
     this.$emit('searchEvt');
   }
 
-  get searchResult(){
-    return this.intProjects.filter((item: any) => {
-      return this.projSearch.toLowerCase().split(' ').every(i => item.title.toLowerCase().includes(i));
-    })
+
+  public selectItem(e: number){
+    /*
+    const listEl = this.$refs['projList'].$el;
+    const projEl = this.$refs['projItem'][e].$el;
+
+    listEl.scrollIntoView(projEl);
+    */
+
+    this.$emit('selected', e);
   }
 
   public setTitle(title: string){
-    const _title = title ? title : 'untitled';
-    this.$emit('setNewTitle', title);
-
     this.adding = false;
+    // this.$emit('removeProject');
+    const _title = title ? title : 'untitled';
+    this.$emit('setNewTitle', _title);
   }
 
-  public addProject(){
-    this.projSearch = "";
-    // this.intProjects.push({});
-    // this.current = this.projects.length-1;
-    this.adding = true;
-    this.$emit('addProject');
-  }
-
-  private mounted(){
-    this.intProjects = this.projects;
-    // console.log(this.intProjects);
-  }
-
-  private selectProject(e: number){
-    console.log('test');
-    this.current = e;
-    console.log(e);
-  }
-
-  private search(e: string){
-    this.projSearch = e;
-  }
 }
 </script>
 
 <style>
+#projListContainer{
+  flex: 1;
+  /* display: flex; */
+  /* flex-flow: column; */
+  overflow: auto;
+  }
+  #projList{
+    /* display: flex; */
+    /* flex-flow: column; */
+    }
 .search{
   padding: 10px;
   border-bottom: 1px solid;
@@ -101,5 +82,7 @@ export default class DDProjList extends Vue {
   text-align: center;
   padding: 20px 0px;
   font-weight: bold;
+  border-top: 2px solid;
+  height: 10px;
   }
 </style>

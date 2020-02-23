@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <input type="search" v-model="projSearch" placeholder="Search" />
+    <input :disabled="disabled" type="search" v-model="projSearch" placeholder="Search" />
   </div>
 </template>
 
@@ -10,6 +10,9 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component
 export default class DDSearch extends Vue {
   private projSearch = "";
+
+  @Prop({default: true})
+  disabled !: boolean;
 
   @Watch('projSearch')
   onChange(val: string){

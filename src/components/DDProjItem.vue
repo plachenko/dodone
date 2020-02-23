@@ -4,11 +4,11 @@
     <div v-if="!project.title" class="inner_inp">
       <form @submit.prevent="$emit('setNewTitle', titleInp)">
         <input
+          ref="inp"
           type="text"
           autocomplete="off"
           v-model="titleInp"
           placeholder="Untitled" />
-        <!-- <input type="submit" /> -->
       </form>
     </div>
 
@@ -28,6 +28,12 @@ export default class DDProjItem extends Vue{
   project!: any;
 
   private titleInp = "";
+
+  mounted(){
+    if(!this.project.title){
+      this.$refs.inp.focus();
+    }
+  }
 }
 </script>
 <style>

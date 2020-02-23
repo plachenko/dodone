@@ -1,6 +1,6 @@
 <template>
   <div id="top">
-    <h1 id="logo">DoDone</h1>
+    <h1 id="logo">DenDo</h1>
     <div class="btn show_btn" @click="$emit('toggleMenu')"> ... </div>
   </div>
 </template>

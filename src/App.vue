@@ -1,24 +1,33 @@
 <template>
   <div id="app">
     <div id="left" style="display: flex; flex-flow: column;">
-      <!--
-      <div style="height: 100px; background-color:#F00"></div>
-      <div style="flex: 1; width: 100%; background-color:#0F0; overflow: auto;">
-        <div style="height: 1000px; width: 20px; background-color:#FF0;"></div>
-      </div>
-      <div style="height: 100px; background-color:#00F"></div>
-      -->
       <DDTop @toggleMenu="show = !show" />
+
+      <DDSearch :class="{hide: !show}" :disabled="!projectsWithTitle" @searchEvt="search" />
+
       <DDProjList
         @addProject="addProject()"
+        @removeProject="removeProject()"
         @setNewTitle="setTitle($event)"
-        :projects="projects"
+        @selected="current = $event"
+        :projects="searchResult"
         :class="{hide: !show}"
         :current="current" />
+
+      <div
+        v-if="!adding"
+        @click="addProject()"
+        :class="{hide: !show}"
+        class="btn add_btn">+ New list</div>
     </div>
-    <div id="right">
+    <div id="right" :class="{hide: show}">
+      <div v-if="projects[current].title" style="height: 20px; padding: 20px;">{{projects[current].title}}</div>
+      <div>
+        <div v-for="(item, k) in projects[current].items" :key="k" />
+      </div>
 
     </div>
+
     <!--
     <div id="left">
       <div id="left_cont">
@@ -103,10 +112,12 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import DDProject from './util/DDProject';
 import DDTop from './components/DDTop.vue';
 import DDProjList from './components/DDProjList.vue';
+import DDSearch from './components/DDSearch.vue';
 
 @Component({
   components:{
     DDTop,
+    DDSearch,
     DDProjList
   }
 })
@@ -114,10 +125,16 @@ export default class App extends Vue {
   private show = false;
   private projects: any[] = [];
   private current = 0;
+  private projSearch = "";
+  private adding = false;
 
-  @Watch('projects', {deep: true})
+  @Watch('projects')
   onProjectChange(val: object){
-    console.log(val);
+    // console.log(val);
+  }
+
+  private search(e: string){
+    this.projSearch = e;
   }
 
   private mounted(){
@@ -125,8 +142,8 @@ export default class App extends Vue {
     for(let i = 0; i < 10; i++){
       items.push({txt: 'test'});
     }
-    for(let i = 0; i < 10; i++){
-      this.projects.push(new DDProject('test'));
+    for(let i = 0; i < 100; i++){
+      this.projects.push(new DDProject('test', items));
     }
     /*
     if(localStorage.getItem('projects')){
@@ -135,8 +152,26 @@ export default class App extends Vue {
     */
   }
 
+  get projectsWithTitle(){
+    return this.projects.some(i => i.title.length)
+  }
+
+  get searchResult(){
+    return this.projects.filter((item: any) => {
+      return this.projSearch.toLowerCase().split(' ').every((i: string) => item.title.toLowerCase().includes(i));
+    })
+  }
+
+  public removeProject(){
+    console.log('removing...', this.projects);
+    this.projects.pop();
+    console.log(this.projects);
+  }
+
   public addProject(){
+    this.projSearch = "";
     this.projects.push(new DDProject());
+    this.current = this.projects.length-1;
   }
 
   public setTitle(e: string){
@@ -306,9 +341,10 @@ export default class App extends Vue {
     }
     #left{
       flex-basis: 5%;
+      height: 100%;
       }
       .hide{
-        display: none;
+        display: none !important;
         }
 }
 
@@ -318,7 +354,7 @@ export default class App extends Vue {
     }
     #left{
       height: 100%;
-      flex-basis: 25%;
+      flex-basis: 20%;
       border-right: 1px solid;
       }
       .show_btn{
@@ -348,7 +384,6 @@ export default class App extends Vue {
   }
   #left{
     min-width: 170px;
-    flex: 1;
     }
 
   #right{
