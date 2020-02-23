@@ -67,7 +67,7 @@ export default class DDProjItem extends Vue{
 
 .proj_title{
   display: block;
-  width: 80%;
+  width: 60%;
   text-overflow: ellipsis;
   overflow: hidden;
   float: left;

@@ -21,11 +21,12 @@
         class="btn add_btn">+ New list</div>
     </div>
     <div id="right" :class="{hide: show}">
+      <!--
       <div v-if="projects[current].title" style="height: 20px; padding: 20px;">{{projects[current].title}}</div>
       <div>
         <div v-for="(item, k) in projects[current].items" :key="k" />
       </div>
-
+      -->
     </div>
 
     <!--
@@ -342,6 +343,7 @@ export default class App extends Vue {
     #left{
       flex-basis: 5%;
       height: 100%;
+      flex: 1;
       }
       .hide{
         display: none !important;
