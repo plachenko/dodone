@@ -1,15 +1,21 @@
 <template>
   <div id="app">
     <div id="left" :class="{noFlex: !show}">
-      <DDTop @toggleMenu="show = !show" />
+      <DDTop
+        @toggleMenu="show = !show"
+        @save="save"
+        @clear="clear" />
 
-      <DDSearch :class="{hide: !show}" :disabled="!projectsWithTitle" @searchEvt="search" />
+      <DDSearch
+        :class="{hide: !show}"
+        :disabled="!projectsWithTitle"
+        @searchEvt="search" />
 
       <DDProjList
         @addProject="addProject()"
         @removeProject="removeProject()"
         @setNewTitle="setTitle($event)"
-        @selected="current = $event - 1"
+        @selected="select($event - 1)"
         :projects="searchResult"
         :class="{hide: !show}"
         :current="current" />
@@ -30,100 +36,34 @@
     </div>
 
     <div id="right" :class="{hide: show}">
-      <!-- Projects -->
 
-      <div v-if="projects.length">
-        <div style="text-align: center; flex: 1; padding: 10px;box-sizing: border-box; border-bottom: 1px dashed;">
+      <!-- Projects -->
+      <div v-if="projects.length" id="projCont">
+        <div id="projTitle">
           <h2>{{projects[current].title || "Untitled"}}</h2>
         </div>
-        <div v-if="projects[current].items.length" style="overflow-y: auto; background-color:#F00; flex: 1;">
-          <div class="projectInnerItem" v-for="(item, k) in projects[current].items" :key="k">{{item.txt}}</div>
-        </div>
-        <!--
-        <div v-else style="flex: 1; align-items: center; justify-items:center; display: flex;">
-          <div style="align-self: center; justify-self: center; flex:1; color:#AAA;">no list items!</div>
-        </div>
-        -->
-      </div>
 
-    </div>
+        <div id="projItemCont">
+          <div id="projItemInner">
+            <!--
+            <div v-if="!projects[current].items.length" style="color:#AAA; justify-self: center; align-self: center">no list items!</div>
+            <div v-else style="flex: 1; overflow: auto;">
+              <div style="border-bottom: 1px solid; padding: 10px; flex: 1;" v-for="(item, k) in projects[current].items" :key="k">
 
-    <!--
-    <div id="left">
-      <div id="left_cont">
-        <div id="left_top">
-          <div style="display: flex">
-            <h1 id="logo">DoDoneDidr</h1>
-            <div class="show" @click="show = !show" style="cursor: pointer; border-left: 1px solid; padding: 20px 20px 10px 20px;">
-              ...
+                <div style="padding: 3px; border-radius: 10px; border: 1px dashed; float:left; margin-right: 10px;">
+                  <div v-if="item.done" style="width: 10px; height: 10px; border-radius: 10px; background-color:#0C0;"></div>
+                  <div v-else style="width: 10px; height: 10px; border-radius: 10px;"></div>
+
+                </div>
+              </div>
             </div>
-          </div>
-          <div :class="{hide: !show}" id="proj_search" >
-            <input type="search" v-model="projSearch" placeholder="Search" />
-          </div>
-        </div>
-        <div :class="{hide: !show}" id="project_list">
-          <div
-            @click="current = k" v-for="(project, k) in searchResult"
-            :class="{project: true, current: k == current, temp: !project.title}"
-            :key="k">
-              <span class="proj_title">{{project.title || project.tempTitle}}</span>
-              <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
-            </div>
-        </div>
-        <div :class="{hide: !show}">
-          <div id="addbtn" class="project" @click="addProject()">+ New list</div>
-          <div class="project" @click="loadGHIssues()">GH issues</div>
-          <div class="project" @click="clear()">clear</div>
-          <div class="project" @click="saveGist()">Save Gist</div>
-          <div class="project" @click="loadGist()">Load Gist</div>
-          <div v-for="(g, k) in gists" :key="k" class="project" @click="loadGistItem(k)">{{g.id}}</div>
-          <div class="project" @click="save()">save</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="right">
-      <div v-if="projects.length" style="flex: 1;">
-        <div class="top">
-
-          <div id="list_title">
-            <div class="inner" v-if="projects[current].title">
-              <h2 style="float: left;">{{projects[current].title}}</h2>
-              <div @click="removeList()" style="padding: 10px; float: right; background-color:#F00; border-radius: 15px;">remove</div>
-            </div>
-            <form v-else @submit.prevent="setProjectTitle()">
-              <input type="text" autocomplete="off" v-model="titleInp" :placeholder="projects[current].tempTitle" />
-              <input type="submit" />
-            </form>
-          </div>
-
-        </div>
-        <div id="list_container" style="height: 100%;">
-          <form v-if="projects[current].title" @submit.prevent="addProjectItem()">
-            <input type="text" autocomplete="off" v-model="itemInp" placeholder="add new item" />
-            <input type="submit" />
-          </form>
-          <div v-if="projects[current].items.length">
-            <ul>
-              <li
-                v-for="(i, k) in projects[current].items"
-                :key="k"
-                :class="{done: i.done}">
-                  <span @click="removeItem(k)" style="border-right: 1px solid; padding-right: 10px; color:#F00; margin-right: 10px; display: inline-block; cusor: pointer;">x</span>
-                  <span @click="i.done = !i.done">{{i.txt}}</span></li>
-            </ul>
-          </div>
-          <div v-else style="display: flex; align-items: center; background-color:#0F0; height: 100%; justify-items: center;">
-            <div style="width: 100px; background-color:#F00;">
-              no items.
-            </div>
+            -->
           </div>
         </div>
 
       </div>
+
     </div>
-    -->
   </div>
 </template>
 
@@ -160,6 +100,11 @@ export default class App extends Vue {
   }
 
   private mounted(){
+
+    if(localStorage.getItem('projects')){
+      this.load();
+    }
+
     if(!this.projects.length){
       this.show = true;
     }
@@ -215,6 +160,36 @@ export default class App extends Vue {
       this.show = false;
     }
     this.projects[this.projects.length-1].title = e;
+    this.save();
+  }
+
+  public save(){
+    if(this.projectsWithTitle){
+      localStorage.setItem('current', this.current);
+      localStorage.setItem('projects', JSON.stringify(this.projects));
+    }
+  }
+
+  public clear(){
+    alert('are you sure?')
+    // this.titleInp = "";
+    // this.itemInp = "";
+    this.adding = false;
+    this.projects = [];
+    localStorage.clear();
+  }
+
+  public select(e: number){
+    this.current = e;
+    localStorage.setItem('current', this.current);
+  }
+
+  public load(){
+    this.current = JSON.parse(localStorage.getItem('current'));
+    const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
+    for(const proj of savedProjects){
+      this.projects.push(new DDProject(proj.title, proj.items));
+    }
   }
   /*
   private inp = "";
@@ -339,20 +314,9 @@ export default class App extends Vue {
     }
   }
 
-  public load(){
-    this.current = JSON.parse(localStorage.getItem('current'));
-    const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
-    for(const proj of savedProjects){
-      this.projects.push(new DDProject(proj.title, proj.items));
-    }
-  }
 
-  public save(){
-    if(this.projectsWithTitle){
-      localStorage.setItem('current', this.current);
-      localStorage.setItem('projects', JSON.stringify(this.projects));
-    }
-  }
+
+
 
   public setProjectTitle(){
     this.projects[this.current].setTitle(this.titleInp);
@@ -385,6 +349,7 @@ export default class App extends Vue {
       }
       .noFlex{
         /* height: 0px; */
+        display: block !important;
         flex:0 !important;
       }
       .hide{
@@ -430,7 +395,7 @@ export default class App extends Vue {
     }
 
 .current{
-  background-color:#EEE;
+  background-color:#CCC;
   }
 
 #app {
@@ -453,7 +418,6 @@ export default class App extends Vue {
     overflow: hidden;
     display: flex;
     flex-flow: column;
-    /* overflow: auto; */
     }
     #list_title{
       border-bottom: #CCC 1px dashed;
@@ -518,5 +482,34 @@ background-color:#A33;
 flex:1;
 text-align: center;
 padding: 15px;
+}
+
+#projCont{
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+#projTitle{
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px dashed;
+}
+
+#projItemCont{
+  flex: 1;
+  height: 100%;
+  background-color:#CCC;
+  padding: 20px;
+  box-sizing: border-box;
+}
+#projItemInner{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  background-color:#FFF;
+  flex:1;
+  width: 100%;
 }
 </style>
