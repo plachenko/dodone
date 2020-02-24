@@ -13,7 +13,6 @@
     </div>
 
     <div v-else @click="$emit('selected')" class="inner">
-      {{ project. id }}
       <span class="proj_title">{{ project.title }}</span>
       <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="left" :class="{noFlex: show}">
+    <div id="left" :class="{noFlex: !show}">
       <DDTop @toggleMenu="show = !show" />
 
       <DDSearch :class="{hide: !show}" :disabled="!projectsWithTitle" @searchEvt="search" />
@@ -34,14 +34,16 @@
 
       <div v-if="projects.length">
         <div style="text-align: center; flex: 1; padding: 10px;box-sizing: border-box; border-bottom: 1px dashed;">
-          <h2>{{projects[current].title || "Untitled"}} {{projects[current].id}}</h2>
+          <h2>{{projects[current].title || "Untitled"}}</h2>
         </div>
-        <div v-if="projects[current].items.length" style="overflow-y: auto;">
+        <div v-if="projects[current].items.length" style="overflow-y: auto; background-color:#F00; flex: 1;">
           <div class="projectInnerItem" v-for="(item, k) in projects[current].items" :key="k">{{item.txt}}</div>
         </div>
+        <!--
         <div v-else style="flex: 1; align-items: center; justify-items:center; display: flex;">
           <div style="align-self: center; justify-self: center; flex:1; color:#AAA;">no list items!</div>
         </div>
+        -->
       </div>
 
     </div>
@@ -445,7 +447,10 @@ export default class App extends Vue {
     flex: 1;
     height: 100%;
     min-width: 350px;
-    overflow: auto;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+    /* overflow: auto; */
     }
     #list_title{
       border-bottom: #CCC 1px dashed;
