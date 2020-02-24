@@ -23,8 +23,8 @@
       </div>
 
       <div v-else class="submitCont" :class="{hide: !show}">
-        <div class="btn" @click="submitAdd" style="font-weight: bold; color:#FFF; border-right: #000 2px solid; box-sizing: border-box; background-color:#3A3; flex:1; text-align: center; padding: 15px;">Add</div>
-        <div class="btn" @click="cancelAdd" style="font-weight: bold; color:#FFF; background-color:#A33; flex:1; text-align: center; padding: 15px;">Cancel</div>
+        <div class="btn" @click="submitAdd" id="addbtn">Add</div>
+        <div class="btn" @click="cancelAdd" id="cancelbtn">Cancel</div>
       </div>
 
     </div>
@@ -160,6 +160,10 @@ export default class App extends Vue {
   }
 
   private mounted(){
+    if(!this.projects.length){
+      this.show = true;
+    }
+    /*
     const items = [];
     for(let i = 0; i < 20; i++){
       items.push({txt: 'test'});
@@ -167,7 +171,6 @@ export default class App extends Vue {
     for(let i = 0; i < 20; i++){
       this.projects.push(new DDProject('test', items));
     }
-    /*
     if(localStorage.getItem('projects')){
       this.load();
     }
@@ -497,4 +500,23 @@ export default class App extends Vue {
         }
 
 
+#addbtn{
+font-weight: bold;
+color:#FFF;
+border-right: #000 2px solid;
+box-sizing: border-box;
+background-color:#3A3;
+flex:1;
+text-align: center;
+padding: 15px;
+}
+
+#cancelbtn{
+font-weight: bold;
+color:#FFF;
+background-color:#A33;
+flex:1;
+text-align: center;
+padding: 15px;
+}
 </style>
