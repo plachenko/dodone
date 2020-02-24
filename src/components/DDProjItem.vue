@@ -2,7 +2,7 @@
   <div class="projectItem">
 
     <div v-if="!project.title" class="inner_inp">
-      <form @submit.prevent="$emit('setNewTitle', titleInp)">
+      <form ref="newItem" @keyup.esc="$emit('cancelNew')" @submit.prevent="$emit('setNewTitle', titleInp)">
         <input
           ref="inp"
           type="text"
@@ -21,15 +21,31 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { EventBus } from '../eventbus';
 
 @Component({})
 export default class DDProjItem extends Vue{
   @Prop({default: {}})
   project!: any;
 
+  @Prop({default: false})
+  current!: boolean;
+
   private titleInp = "";
 
   mounted(){
+    EventBus.$on('submit', () => {
+      if(this.current) {
+        this.$emit('setNewTitle', this.titleInp);
+      }
+    });
+
+    EventBus.$on('cancel', () => {
+      if(this.current) {
+        this.$emit('setNewTitle', this.titleInp);
+      }
+    });
+
     if(!this.project.title){
       this.$refs.inp.focus();
     }
@@ -39,7 +55,6 @@ export default class DDProjItem extends Vue{
 <style>
 .projectItem{
   border-bottom: #CCC 1px solid;
-  /* height: 55px; */
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;

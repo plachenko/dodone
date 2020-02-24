@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="left" style="display: flex; flex-flow: column;">
+    <div id="left" :class="{noFlex: !show}">
       <DDTop @toggleMenu="show = !show" />
 
       <DDSearch :class="{hide: !show}" :disabled="!projectsWithTitle" @searchEvt="search" />
@@ -19,14 +19,26 @@
         @click="addProject()"
         :class="{hide: !show}"
         class="btn add_btn">+ New list</div>
+      <div v-else class="submitCont" :class="{hide: !show}">
+        <div class="btn" @click="submitAdd" style="background-color:#0F0; flex:1; text-align: center; padding: 15px;">Add</div>
+        <div class="btn" @click="cancelAdd" style="background-color:#F00; flex:1; text-align: center; padding: 15px;">Cancel</div>
+      </div>
     </div>
     <div id="right" :class="{hide: show}">
-      <!--
-      <div v-if="projects[current].title" style="height: 20px; padding: 20px;">{{projects[current].title}}</div>
-      <div>
-        <div v-for="(item, k) in projects[current].items" :key="k" />
+      <!-- Projects -->
+
+      <div v-if="projects.length">
+        <div style="flex: 1; padding: 40px; box-sizing: border-box; border-bottom: 1px dashed;">
+          <h2>{{projects[current].title || "Untitled"}}</h2>
+        </div>
+        <div v-if="projects[current].items.length">
+          <div class="projectInnerItem" v-for="(item, k) in projects[current].items" :key="k">{{item.txt}}</div>
+        </div>
+        <div v-else style="flex: 1; align-items: center; justify-items:center; display: flex;">
+          <div style="align-self: center; justify-self: center; flex:1; color:#AAA;">no list items!</div>
+        </div>
       </div>
-      -->
+
     </div>
 
     <!--
@@ -115,6 +127,8 @@ import DDTop from './components/DDTop.vue';
 import DDProjList from './components/DDProjList.vue';
 import DDSearch from './components/DDSearch.vue';
 
+import { EventBus }  from './eventbus';
+
 @Component({
   components:{
     DDTop,
@@ -164,18 +178,31 @@ export default class App extends Vue {
   }
 
   public removeProject(){
-    console.log('removing...', this.projects);
     this.projects.pop();
-    console.log(this.projects);
+    this.adding = false;
+  }
+
+  public submitAdd(){
+    EventBus.$emit('submit');
+  }
+
+  public cancelAdd(){
+    this.removeProject();
   }
 
   public addProject(){
+    this.adding = true;
+
     this.projSearch = "";
     this.projects.push(new DDProject());
     this.current = this.projects.length-1;
   }
 
   public setTitle(e: string){
+    this.adding = false;
+    if(this.show){
+      this.show = false;
+    }
     this.projects[this.projects.length-1].title = e;
   }
   /*
@@ -344,6 +371,11 @@ export default class App extends Vue {
       flex-basis: 5%;
       height: 100%;
       flex: 1;
+      display: flex;
+      flex-flow: column;
+      }
+      .noFlex{
+        /* flex:0 !important; */
       }
       .hide{
         display: none !important;
@@ -362,6 +394,18 @@ export default class App extends Vue {
       .show_btn{
         display: none;
       }
+}
+
+.submitCont{
+  border-top: 2px solid;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row;
+}
+
+.projectInnerItem{
+  padding: 20px;
+  border-bottom: 1px solid;
 }
 
 .btn{
