@@ -2,7 +2,7 @@
   <div id="projListContainer">
     <DDProjItem
       @setNewTitle="setTitle($event)"
-      @selected="selectItem(k)"
+      @selected="selectItem(project.id)"
       @cancelNew="$emit('removeProject')"
       v-for="(project, k) in projects"
       ref="projItem"
@@ -62,13 +62,13 @@ export default class DDProjList extends Vue {
 <style>
 #projListContainer{
   flex: 1;
-  /* display: flex; */
-  /* flex-flow: column; */
+  display: flex;
+  flex-flow: column;
   overflow: auto;
   }
   #projList{
-    /* display: flex; */
-    /* flex-flow: column; */
+    display: flex;
+    flex-flow: column;
     }
 .search{
   padding: 10px;

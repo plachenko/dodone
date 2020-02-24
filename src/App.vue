@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="left" :class="{noFlex: !show}">
+    <div id="left" :class="{noFlex: show}">
       <DDTop @toggleMenu="show = !show" />
 
       <DDSearch :class="{hide: !show}" :disabled="!projectsWithTitle" @searchEvt="search" />
@@ -9,7 +9,7 @@
         @addProject="addProject()"
         @removeProject="removeProject()"
         @setNewTitle="setTitle($event)"
-        @selected="current = $event"
+        @selected="current = $event - 1"
         :projects="searchResult"
         :class="{hide: !show}"
         :current="current" />
@@ -18,20 +18,25 @@
         v-if="!adding"
         @click="addProject()"
         :class="{hide: !show}"
-        class="btn add_btn">+ New list</div>
-      <div v-else class="submitCont" :class="{hide: !show}">
-        <div class="btn" @click="submitAdd" style="background-color:#0F0; flex:1; text-align: center; padding: 15px;">Add</div>
-        <div class="btn" @click="cancelAdd" style="background-color:#F00; flex:1; text-align: center; padding: 15px;">Cancel</div>
+        class="btn add_btn">
+        <span>+ New list</span>
       </div>
+
+      <div v-else class="submitCont" :class="{hide: !show}">
+        <div class="btn" @click="submitAdd" style="font-weight: bold; color:#FFF; border-right: #000 2px solid; box-sizing: border-box; background-color:#3A3; flex:1; text-align: center; padding: 15px;">Add</div>
+        <div class="btn" @click="cancelAdd" style="font-weight: bold; color:#FFF; background-color:#A33; flex:1; text-align: center; padding: 15px;">Cancel</div>
+      </div>
+
     </div>
+
     <div id="right" :class="{hide: show}">
       <!-- Projects -->
 
       <div v-if="projects.length">
-        <div style="flex: 1; padding: 40px; box-sizing: border-box; border-bottom: 1px dashed;">
-          <h2>{{projects[current].title || "Untitled"}}</h2>
+        <div style="text-align: center; flex: 1; padding: 10px;box-sizing: border-box; border-bottom: 1px dashed;">
+          <h2>{{projects[current].title || "Untitled"}} {{projects[current].id}}</h2>
         </div>
-        <div v-if="projects[current].items.length">
+        <div v-if="projects[current].items.length" style="overflow-y: auto;">
           <div class="projectInnerItem" v-for="(item, k) in projects[current].items" :key="k">{{item.txt}}</div>
         </div>
         <div v-else style="flex: 1; align-items: center; justify-items:center; display: flex;">
@@ -154,10 +159,10 @@ export default class App extends Vue {
 
   private mounted(){
     const items = [];
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 20; i++){
       items.push({txt: 'test'});
     }
-    for(let i = 0; i < 100; i++){
+    for(let i = 0; i < 20; i++){
       this.projects.push(new DDProject('test', items));
     }
     /*
@@ -179,6 +184,7 @@ export default class App extends Vue {
 
   public removeProject(){
     this.projects.pop();
+    this.current --;
     this.adding = false;
   }
 
@@ -368,14 +374,13 @@ export default class App extends Vue {
     flex-flow: column;
     }
     #left{
-      flex-basis: 5%;
       height: 100%;
-      flex: 1;
       display: flex;
       flex-flow: column;
       }
       .noFlex{
-        /* flex:0 !important; */
+        /* height: 0px; */
+        flex:0 !important;
       }
       .hide{
         display: none !important;
@@ -387,8 +392,12 @@ export default class App extends Vue {
     flex-flow: row;
     }
     #left{
-      height: 100%;
       flex-basis: 20%;
+      height: 100%;
+      flex: 1;
+      display: flex;
+      flex-flow: column;
+      max-width: 300px;
       border-right: 1px solid;
       }
       .show_btn{

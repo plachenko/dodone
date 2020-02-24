@@ -2,19 +2,29 @@
 
 export default class DDProject{
   public items: object[] = [];
-  public id !: symbol;
+  public id !: number;
   public title = "";
   public proj_search = "";
   public projects = [];
   public tempTitle = "new project"
+  public latestId!: number;
 
   constructor(title = '', items = []){
     this.title = title;
-    this.id = Symbol();
+    this.id = DDProject.incrementId();
 
     if(items.length){
       this.items = items;
     }
+  }
+
+  static incrementId() {
+    if(!this.latestId){
+      this.latestId = 1;
+    }else{
+      this.latestId++;
+    }
+    return this.latestId;
   }
 
   public setTitle(title: string){

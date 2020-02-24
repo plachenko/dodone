@@ -19,6 +19,8 @@ export default class DDTop extends Vue {
   border-bottom: 1px solid;
   }
   #logo{
+    background-color:#666;
+    color:#FFF;
     width: 100%;
     font-size: 1.4em;
     padding: 11px;
