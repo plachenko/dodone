@@ -171,12 +171,14 @@ export default class App extends Vue {
   }
 
   public clear(){
-    alert('are you sure?')
-    // this.titleInp = "";
-    // this.itemInp = "";
-    this.adding = false;
-    this.projects = [];
-    localStorage.clear();
+    const clearConfirm = confirm('Are you sure you want to clear?');
+    if(clearConfirm){
+      // this.titleInp = "";
+      // this.itemInp = "";
+      this.adding = false;
+      this.projects = [];
+      localStorage.clear();
+    }
   }
 
   public select(e: number){
