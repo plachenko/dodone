@@ -38,26 +38,22 @@
     <div id="right" :class="{hide: show}">
 
       <!-- Projects -->
-      <div v-if="projects.length" id="projCont">
+      <div v-if="projects[current]" id="projCont">
         <div id="projTitle">
           <h2>{{projects[current].title || "Untitled"}}</h2>
         </div>
 
         <div id="projItemCont">
           <div id="projItemInner">
-            <!--
-            <div v-if="!projects[current].items.length" style="color:#AAA; justify-self: center; align-self: center">no list items!</div>
-            <div v-else style="flex: 1; overflow: auto;">
-              <div style="border-bottom: 1px solid; padding: 10px; flex: 1;" v-for="(item, k) in projects[current].items" :key="k">
-
-                <div style="padding: 3px; border-radius: 10px; border: 1px dashed; float:left; margin-right: 10px;">
-                  <div v-if="item.done" style="width: 10px; height: 10px; border-radius: 10px; background-color:#0C0;"></div>
-                  <div v-else style="width: 10px; height: 10px; border-radius: 10px;"></div>
-
-                </div>
+            <div v-if="projects[current].items.length" id="projList">
+              <div class="projItem btn" v-for="(item, k) in projects[current].items" :key="k">
+                  <div class="circle"></div>
+                  <div>{{item.txt}}</div>
               </div>
             </div>
-            -->
+
+            <div v-else id="noProj">no list items!</div>
+
           </div>
         </div>
 
@@ -68,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import DDProject from './util/DDProject';
 import DDTop from './components/DDTop.vue';
 import DDProjList from './components/DDProjList.vue';
@@ -85,15 +81,10 @@ import { EventBus }  from './eventbus';
 })
 export default class App extends Vue {
   private show = false;
-  private projects: any[] = [];
+  private projects: DDProject[] = [];
   private current = 0;
   private projSearch = "";
   private adding = false;
-
-  @Watch('projects')
-  onProjectChange(val: object){
-    // console.log(val);
-  }
 
   private search(e: string){
     this.projSearch = e;
@@ -108,7 +99,6 @@ export default class App extends Vue {
     if(!this.projects.length){
       this.show = true;
     }
-    /*
     const items = [];
     for(let i = 0; i < 20; i++){
       items.push({txt: 'test'});
@@ -116,6 +106,7 @@ export default class App extends Vue {
     for(let i = 0; i < 20; i++){
       this.projects.push(new DDProject('test', items));
     }
+    /*
     if(localStorage.getItem('projects')){
       this.load();
     }
@@ -127,7 +118,7 @@ export default class App extends Vue {
   }
 
   get searchResult(){
-    return this.projects.filter((item: any) => {
+    return this.projects.filter((item: DDProject) => {
       return this.projSearch.toLowerCase().split(' ').every((i: string) => item.title.toLowerCase().includes(i));
     })
   }
@@ -165,7 +156,7 @@ export default class App extends Vue {
 
   public save(){
     if(this.projectsWithTitle){
-      localStorage.setItem('current', this.current);
+      localStorage.setItem('current', this.current+"");
       localStorage.setItem('projects', JSON.stringify(this.projects));
     }
   }
@@ -173,8 +164,7 @@ export default class App extends Vue {
   public clear(){
     const clearConfirm = confirm('Are you sure you want to clear?');
     if(clearConfirm){
-      // this.titleInp = "";
-      // this.itemInp = "";
+      EventBus.$emit('clear');
       this.adding = false;
       this.projects = [];
       localStorage.clear();
@@ -182,12 +172,13 @@ export default class App extends Vue {
   }
 
   public select(e: number){
+    console.log(e);
     this.current = e;
-    localStorage.setItem('current', this.current);
+    localStorage.setItem('current', this.current+"");
   }
 
   public load(){
-    this.current = JSON.parse(localStorage.getItem('current'));
+    this.current = JSON.parse(localStorage.getItem('current') || "");
     const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
     for(const proj of savedProjects){
       this.projects.push(new DDProject(proj.title, proj.items));
@@ -397,7 +388,7 @@ export default class App extends Vue {
     }
 
 .current{
-  background-color:#CCC;
+  background-color:#EEE;
   }
 
 #app {
@@ -414,6 +405,7 @@ export default class App extends Vue {
     }
 
   #right{
+    background-color:#CCC;
     flex: 1;
     height: 100%;
     min-width: 350px;
@@ -467,51 +459,76 @@ export default class App extends Vue {
 
 
 #addbtn{
-font-weight: bold;
-color:#FFF;
-border-right: #000 2px solid;
-box-sizing: border-box;
-background-color:#3A3;
-flex:1;
-text-align: center;
-padding: 15px;
-}
+  font-weight: bold;
+  color:#444;
+  border-right: #000 2px solid;
+  box-sizing: border-box;
+  flex:1;
+  text-align: center;
+  padding: 15px;
+  }
 
 #cancelbtn{
-font-weight: bold;
-color:#FFF;
-background-color:#A33;
-flex:1;
-text-align: center;
-padding: 15px;
-}
+  font-weight: bold;
+  color:#FFF;
+  background-color:#444;
+  flex:1;
+  text-align: center;
+  padding: 15px;
+  }
 
 #projCont{
   flex: 1;
   display: flex;
   flex-flow: column;
+  padding: 30px;
 }
 
 #projTitle{
-  text-align: center;
-  padding: 10px;
+  color:#666;
   box-sizing: border-box;
-  border-bottom: 1px dashed;
+  margin-bottom: 30px;
+  font-size: 1.2em;
+  /* border-bottom: 1px dashed; */
 }
 
 #projItemCont{
   flex: 1;
   height: 100%;
   background-color:#CCC;
-  padding: 20px;
   box-sizing: border-box;
 }
 #projItemInner{
   display: flex;
   flex-flow: column;
   height: 100%;
-  background-color:#FFF;
   flex:1;
   width: 100%;
 }
+
+#projList{
+  flex: 1;
+  overflow: auto;
+  }
+  #noProj{
+    color:#AAA;
+    justify-self: center;
+    align-self: center
+    }
+    .projItem{
+      margin: 2px 0px;
+      border-radius: 10px;
+      background-color:#FFF;
+      /* border-bottom: 1px solid; */
+      padding: 10px;
+      flex: 1;
+    }
+    .circle{
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+      background-color:#0C0;
+    }
+
 </style>
+

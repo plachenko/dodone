@@ -9,7 +9,7 @@
       :current="current == k"
       :key="k"
       :project="project"
-      :class="{ current: k == current }" />
+      :class="{ current: project.id - 1 == current }" />
   </div>
 </template>
 
@@ -29,11 +29,10 @@ export default class DDProjList extends Vue {
   current!: number;
 
   @Prop({default: []})
-  projects!: any[];
-
+  projects!: DDProject[];
 
   @Watch('projSearch')
-  onChange(val: string){
+  onChange(){
     this.$emit('searchEvt');
   }
 
@@ -50,8 +49,6 @@ export default class DDProjList extends Vue {
   }
 
   public setTitle(title: string){
-    this.adding = false;
-    // this.$emit('removeProject');
     const _title = title ? title : 'untitled';
     this.$emit('setNewTitle', _title);
   }
@@ -65,6 +62,7 @@ export default class DDProjList extends Vue {
   display: flex;
   flex-flow: column;
   overflow: auto;
+  direction: rtl;
   }
   #projList{
     display: flex;
@@ -81,10 +79,9 @@ export default class DDProjList extends Vue {
     }
 
 .add_btn{
-  text-align: center;
-  padding: 20px 0px;
+  padding: 20px;
   font-weight: bold;
-  border-top: 2px solid;
-  height: 10px;
+  box-sizing: border-box;
+  border-top: #CCC 1px dashed;
   }
 </style>

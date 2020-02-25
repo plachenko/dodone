@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { EventBus } from '../eventbus';
 
 @Component
 export default class DDSearch extends Vue {
@@ -17,6 +18,12 @@ export default class DDSearch extends Vue {
   @Watch('projSearch')
   onChange(val: string){
     this.$emit('searchEvt', this.projSearch)
+  }
+
+  private mounted(){
+    EventBus.$on('clear', ()=>{
+      this.projSearch ="";
+    })
   }
 }
 </script>

@@ -6,12 +6,14 @@ export default class DDProject{
   public title = "";
   public proj_search = "";
   public projects = [];
-  public tempTitle = "new project"
-  public latestId!: number;
+  public tempTitle = "Untitled"
+  static latestId: number;
 
   constructor(title = '', items = []){
     this.title = title;
-    this.id = DDProject.incrementId();
+    if(!this.id){
+      this.id = DDProject.incrementId();
+    }
 
     if(items.length){
       this.items = items;

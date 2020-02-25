@@ -13,7 +13,7 @@
     </div>
 
     <div v-else @click="$emit('selected')" class="inner">
-      <span class="proj_title">{{ project.title }}</span>
+      <span class="proj_title">{{project.id}} {{ project.title }}</span>
       <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
     </div>
 
@@ -22,11 +22,16 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { EventBus } from '../eventbus';
+import DDProject from '../util/DDProject';
 
 @Component({})
 export default class DDProjItem extends Vue{
+  $refs!: {
+    newItem: HTMLFormElement;
+    inp: HTMLInputElement;
+  }
   @Prop({default: {}})
-  project!: any;
+  project!: DDProject;
 
   @Prop({default: false})
   current!: boolean;
@@ -58,6 +63,7 @@ export default class DDProjItem extends Vue{
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
+  direction: ltr;
   }
   .projectItem:hover{
     background-color:#EEE;
