@@ -7,7 +7,7 @@ export default class DDProject{
   public proj_search = "";
   public projects = [];
   public tempTitle = "Untitled"
-  static latestId: number;
+  public static latestId: number;
 
   constructor(title = '', items = []){
     this.title = title;
@@ -18,6 +18,10 @@ export default class DDProject{
     if(items.length){
       this.items = items;
     }
+  }
+
+  public static reset(){
+    this.latestId = 0;
   }
 
   static incrementId() {

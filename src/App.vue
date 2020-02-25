@@ -43,17 +43,19 @@
           <h2>{{projects[current].title || "Untitled"}}</h2>
         </div>
 
-        <div id="projItemCont">
+        <div id="projItemCont" v-if="projects[current].items.length">
           <div id="projItemInner">
-            <div v-if="projects[current].items.length" id="projList">
+            <div id="projList">
               <div class="projItem btn" v-for="(item, k) in projects[current].items" :key="k">
                   <div class="circle"></div>
                   <div>{{item.txt}}</div>
               </div>
             </div>
-
-            <div v-else id="noProj">no list items!</div>
-
+          </div>
+        </div>
+        <div v-else style="flex: 1; border: #CCC 2px dashed; border-radius: 10px;">
+          <div >
+            <div id="noProj">no list items!</div>
           </div>
         </div>
 
@@ -99,6 +101,7 @@ export default class App extends Vue {
     if(!this.projects.length){
       this.show = true;
     }
+    /*
     const items = [];
     for(let i = 0; i < 20; i++){
       items.push({txt: 'test'});
@@ -106,6 +109,7 @@ export default class App extends Vue {
     for(let i = 0; i < 20; i++){
       this.projects.push(new DDProject('test', items));
     }
+    */
     /*
     if(localStorage.getItem('projects')){
       this.load();
@@ -164,6 +168,7 @@ export default class App extends Vue {
   public clear(){
     const clearConfirm = confirm('Are you sure you want to clear?');
     if(clearConfirm){
+      DDProject.reset();
       EventBus.$emit('clear');
       this.adding = false;
       this.projects = [];
@@ -306,10 +311,6 @@ export default class App extends Vue {
       })
     }
   }
-
-
-
-
 
   public setProjectTitle(){
     this.projects[this.current].setTitle(this.titleInp);
