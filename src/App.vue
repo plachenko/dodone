@@ -13,7 +13,7 @@
 
       <DDProjList
         @addProject="addProject()"
-        @removeProject="removeProject()"
+        @removeProject="removeProject($event)"
         @setNewTitle="setTitle($event)"
         @selected="select($event - 1)"
         :projects="searchResult"
@@ -43,6 +43,7 @@
           <h2>{{projects[current].title || "Untitled"}}</h2>
         </div>
 
+        <!--
         <div v-if="projects[current].items">
           <div v-for="(item, k) in projects[current].items" :key="k" class="btn" style="background-color:#FFF; padding: 10px; border-radius: 10px; margin: 3px 0px;">
             <div>{{item.txt}}</div>
@@ -56,8 +57,9 @@
             </form>
           </div>
         </div>
+        -->
 
-        <div @click="addListItem" style="border: #AAA 2px dashed; padding: 15px; font-weight: bold; text-align:center; border-radius: 10px; margin-top: 20px;" class="btn">+ Add List Item</div>
+        <!-- <div @click="addListItem" style="border: #AAA 2px dashed; padding: 15px; font-weight: bold; text-align:center; border-radius: 10px; margin-top: 20px;" class="btn">+ Add List Item</div> -->
 
         <!--
         <div id="projItemCont" v-if="projects[current].items.length">
@@ -104,7 +106,7 @@ export default class App extends Vue {
   private current = 0;
   private projSearch = "";
   private adding = false;
-  private itemArr = [];
+  private itemArr: any = [];
   private itemInp = [];
 
   private search(e: string){
@@ -120,20 +122,6 @@ export default class App extends Vue {
     if(!this.projects.length){
       this.show = true;
     }
-    /*
-    const items = [];
-    for(let i = 0; i < 20; i++){
-      items.push({txt: 'test'});
-    }
-    for(let i = 0; i < 20; i++){
-      this.projects.push(new DDProject('test', items));
-    }
-    */
-    /*
-    if(localStorage.getItem('projects')){
-      this.load();
-    }
-    */
   }
 
   get projectsWithTitle(){
@@ -146,9 +134,19 @@ export default class App extends Vue {
     })
   }
 
-  public removeProject(){
-    this.projects.pop();
-    this.current --;
+  public removeProject(k: number){
+    console.log(this.projects, k);
+    let cur;
+    if(k > 0){
+      cur = k;
+    }else{
+      cur = 0
+    }
+    this.projects.splice(cur, 1);
+    if(this.projects.length){
+      this.select(cur);
+    }
+
     this.adding = false;
   }
 
@@ -157,7 +155,8 @@ export default class App extends Vue {
   }
 
   public cancelAdd(){
-    this.removeProject();
+    console.log(this.current+1);
+    this.removeProject(this.current);
   }
 
   public addProject(){
@@ -166,12 +165,6 @@ export default class App extends Vue {
     this.projSearch = "";
     this.projects.push(new DDProject());
     this.current = this.projects.length-1;
-  }
-
-  public addListItem(){
-    // this.projects[this.current].createItem();
-    this.itemArr.push({txt: ''})
-    // console.log('adding item...');
   }
 
   public setTitle(e: string){
@@ -202,11 +195,9 @@ export default class App extends Vue {
   }
 
   public select(e: number){
-    console.log(e);
     this.current = e;
     this.itemArr = this.projects[this.current].items;
     localStorage.setItem('current', this.current+"");
-    console.log(this.itemArr);
   }
 
   public load(){
@@ -230,129 +221,6 @@ export default class App extends Vue {
       this.itemInp = '';
     }
   }
-  /*
-  private inp = "";
-  private current = 0;
-  private projects: any[] = [];
-  private projSearch = "";
-  private titleInp = "";
-  private itemInp = "";
-
-  private show = false;
-
-  public gists = [];
-
-
-  get projectsWithTitle(){
-    return this.projects.some(i => i.title.length)
-  }
-
-  private mounted(){
-    if(localStorage.getItem('projects')){
-      console.log(this.current);
-      this.load();
-    }
-  }
-
-  public addProject(){
-    this.projects.push(new DDProject());
-  }
-
-
-
-  public removeList(){
-    // console.log(i);
-    this.projects.splice(this.current, 1);
-    if(this.current){
-      this.current--;
-    }
-  }
-
-  public removeItem(i: number){
-    this.projects[this.current].items.splice(i, 1);
-  }
-
-  public loadGHIssues(){
-    fetch('https://api.github.com/repos/plachenko/stirlingweather/issues')
-      .then(response => response.json())
-      .then(data => {
-        const issues = [];
-        for(const item of data){
-          let done = false;
-          if(item.closed_at){
-            done = true;
-          }
-          issues.push({txt: item.title, done: done, date: item.created_at});
-        }
-        this.projects.push(new DDProject('GH issues', issues as any));
-      })
-      .catch(error => console.error(error));
-  }
-
-  public searcher(){
-    console.log('searching');
-  }
-
-  public clear(){
-    this.titleInp = "";
-    this.itemInp = "";
-    this.projects = [];
-    localStorage.clear();
-  }
-
-  public loadGist(){
-    fetch('https://api.github.com/users/plachenko/gists')
-      .then(response => response.json())
-      .then(data => {
-        this.gists = data;
-      });
-  }
-
-  public loadGistItem(i: number){
-    fetch('https://api.github.com/gists/'+this.gists[i].id)
-      .then(response => response.json())
-      .then(data => {
-        const cont = data.files[Object.keys(data.files)[0]].content
-
-        const savedProjects = JSON.parse(cont);
-        for(const proj of savedProjects){
-          this.projects.push(new DDProject(proj.title, proj.items));
-        }
-        this.gists = [];
-      })
-  }
-
-  public saveGist(){
-    if(this.projects.length){
-       const gist = {
-        description: 'DoDone List Gist',
-        public: true,
-        files:{
-          'list.js': {
-            content: JSON.stringify(this.projects)
-          }
-        }
-      };
-
-      fetch('https://api.github.com/gists', {
-        method: 'post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Origin': '',
-          'Authorization': 'token '+ process.env.VUE_APP_SECRET
-
-        },
-        body: JSON.stringify(gist)
-      })
-    }
-  }
-
-  public setProjectTitle(){
-    this.projects[this.current].setTitle(this.titleInp);
-    this.titleInp = '';
-  }
-  */
 }
 </script>
 

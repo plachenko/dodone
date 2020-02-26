@@ -3,7 +3,7 @@
     <DDProjItem
       @setNewTitle="setTitle($event)"
       @selected="selectItem(project.id)"
-      @cancelNew="$emit('removeProject')"
+      @cancelNew="$emit('removeProject', current)"
       v-for="(project, k) in projects"
       ref="projItem"
       :current="current == k"
