@@ -14,7 +14,7 @@
       <DDProjList
         @addProject="addProject()"
         @removeProject="removeProject($event)"
-        @setNewTitle="setTitle($event)"
+        @setTitle="setTitle($event)"
         @selected="select($event - 1)"
         :projects="searchResult"
         :class="{hide: !show}"
@@ -26,11 +26,6 @@
         :class="{hide: !show}"
         class="btn add_btn">
         <span>+ New list</span>
-      </div>
-
-      <div v-else class="submitCont" :class="{hide: !show}">
-        <div class="btn" @click="submitAdd" id="addbtn">Add</div>
-        <div class="btn" @click="cancelAdd" id="cancelbtn">Cancel</div>
       </div>
 
     </div>
@@ -135,28 +130,10 @@ export default class App extends Vue {
   }
 
   public removeProject(k: number){
-    console.log(this.projects, k);
-    let cur;
-    if(k > 0){
-      cur = k;
-    }else{
-      cur = 0
-    }
-    this.projects.splice(cur, 1);
-    if(this.projects.length){
-      this.select(cur);
-    }
+    this.projects.splice(k, 1);
+    this.select(k-1);
 
     this.adding = false;
-  }
-
-  public submitAdd(){
-    EventBus.$emit('submit');
-  }
-
-  public cancelAdd(){
-    console.log(this.current+1);
-    this.removeProject(this.current);
   }
 
   public addProject(){
@@ -165,6 +142,8 @@ export default class App extends Vue {
     this.projSearch = "";
     this.projects.push(new DDProject());
     this.current = this.projects.length-1;
+
+    // this.select(this.projects.length-1);
   }
 
   public setTitle(e: string){
@@ -173,6 +152,9 @@ export default class App extends Vue {
       this.show = false;
     }
     this.projects[this.projects.length-1].title = e;
+    this.select(this.projects.length-1);
+
+    //TODO: impelemnt Autosave
     this.save();
   }
 
@@ -195,8 +177,9 @@ export default class App extends Vue {
   }
 
   public select(e: number){
+    console.log(e);
     this.current = e;
-    this.itemArr = this.projects[this.current].items;
+    // this.itemArr = this.projects[this.current].items;
     localStorage.setItem('current', this.current+"");
   }
 
@@ -290,7 +273,7 @@ export default class App extends Vue {
   cursor: pointer;
   }
   .btn:hover{
-    background-color:#EEE;
+    background-color:#CCC;
     }
 
 .current{

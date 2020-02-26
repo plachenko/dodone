@@ -1,9 +1,9 @@
 <template>
   <div id="projListContainer">
     <DDProjItem
-      @setNewTitle="setTitle($event)"
+      @setTitle="setTitle($event)"
       @selected="selectItem(project.id)"
-      @cancelNew="$emit('removeProject', current)"
+      @cancel="$emit('removeProject', current)"
       v-for="(project, k) in projects"
       ref="projItem"
       :current="current == k"
@@ -49,8 +49,9 @@ export default class DDProjList extends Vue {
   }
 
   public setTitle(title: string){
-    const _title = title ? title : 'untitled';
-    this.$emit('setNewTitle', _title);
+    const _title = title ? title : 'Untitled';
+    this.$emit('setTitle', _title);
+    // this.selectItem(this.projects.length-1);
   }
 
 }

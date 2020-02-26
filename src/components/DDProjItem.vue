@@ -2,7 +2,7 @@
   <div class="projectItem">
 
     <div v-if="!project.title" class="inner_inp">
-      <form ref="newItem" @keyup.esc="$emit('cancelNew')" @submit.prevent="$emit('setNewTitle', titleInp)">
+      <form id="frm" ref="newItem" @keyup.esc="$emit('cancel')" @submit.prevent="$emit('setTitle', titleInp)">
         <input
           ref="inp"
           type="text"
@@ -10,6 +10,10 @@
           v-model="titleInp"
           placeholder="Untitled" />
       </form>
+      <div id="optContainer">
+        <div class="opt btn" @click="remove">X</div>
+        <div class="opt btn" @click="add">&#10004;</div>
+      </div>
     </div>
 
     <div v-else @click="$emit('selected')" class="inner">
@@ -38,19 +42,16 @@ export default class DDProjItem extends Vue{
 
   private titleInp = "";
 
+  private remove(){
+    this.$emit('cancel');
+  }
+
+  private add(){
+    this.$emit('setTitle', this.titleInp);
+    this.$emit('selected')
+  }
+
   mounted(){
-    EventBus.$on('submit', () => {
-      if(this.current) {
-        this.$emit('setNewTitle', this.titleInp);
-      }
-    });
-
-    EventBus.$on('cancel', () => {
-      if(this.current) {
-        this.$emit('setNewTitle', this.titleInp);
-      }
-    });
-
     if(!this.project.title){
       this.$refs.inp.focus();
     }
@@ -58,6 +59,16 @@ export default class DDProjItem extends Vue{
 }
 </script>
 <style>
+#optContainer{
+  display: flex;
+  flex: 1;
+  flex-basis: 30%
+}
+#frm{
+  margin-right: 10px;
+  flex-basis: 70%;
+  }
+
 .projectItem{
   border-bottom: #CCC 1px solid;
   cursor: pointer;
@@ -79,11 +90,23 @@ export default class DDProjItem extends Vue{
       }
     .inner_inp{
       padding: 10px;
+      display: flex;
       }
       .inner_inp input{
         padding: 10px;
         width: 100%;
         box-sizing: border-box;
+        }
+
+      .opt{
+        flex: 1;
+        display: flex;
+        place-items: center;
+        justify-content: center;
+        border: 1px solid;
+        }
+      .opt:first-child{
+        margin-right: 3px;
         }
 
 .proj_title{
