@@ -43,6 +43,23 @@
           <h2>{{projects[current].title || "Untitled"}}</h2>
         </div>
 
+        <div v-if="projects[current].items">
+          <div v-for="(item, k) in projects[current].items" :key="k" class="btn" style="background-color:#FFF; padding: 10px; border-radius: 10px; margin: 3px 0px;">
+            <div>{{item.txt}}</div>
+          </div>
+        </div>
+
+        <div v-else-if="itemArr.length">
+          <div v-for="(item, k) in itemArr" :key="k" class="btn" style="background-color:#FFF; padding: 10px; border-radius: 10px; margin: 3px 0px;">
+            <form @submit.prevent="createItem(k)">
+              <input v-model="itemInp[k]" placeholder="item" style="padding: 10px; width: 100%; box-sizing: border-box;" />
+            </form>
+          </div>
+        </div>
+
+        <div @click="addListItem" style="border: #AAA 2px dashed; padding: 15px; font-weight: bold; text-align:center; border-radius: 10px; margin-top: 20px;" class="btn">+ Add List Item</div>
+
+        <!--
         <div id="projItemCont" v-if="projects[current].items.length">
           <div id="projItemInner">
             <div id="projList">
@@ -57,9 +74,9 @@
         <div v-else style="flex: 1; border: #AAA 2px dashed; align-items:center; justify-content: center; display: flex; border-radius: 20px;">
           <div id="noProj">no list items!</div>
         </div>
+        <div style="padding: 20px; border-top: 1px dashed; font-weight: bold; text-align: center;" class="btn" @click="addProjectItem">+ New item</div>
+        -->
       </div>
-
-      <div style="padding: 20px; border-top: 1px dashed; font-weight: bold; text-align: center;" class="btn" @click="addProjectItem">+ New item</div>
 
     </div>
   </div>
@@ -87,7 +104,8 @@ export default class App extends Vue {
   private current = 0;
   private projSearch = "";
   private adding = false;
-  private itemInp = "";
+  private itemArr = [];
+  private itemInp = [];
 
   private search(e: string){
     this.projSearch = e;
@@ -150,6 +168,12 @@ export default class App extends Vue {
     this.current = this.projects.length-1;
   }
 
+  public addListItem(){
+    // this.projects[this.current].createItem();
+    this.itemArr.push({txt: ''})
+    // console.log('adding item...');
+  }
+
   public setTitle(e: string){
     this.adding = false;
     if(this.show){
@@ -180,7 +204,9 @@ export default class App extends Vue {
   public select(e: number){
     console.log(e);
     this.current = e;
+    this.itemArr = this.projects[this.current].items;
     localStorage.setItem('current', this.current+"");
+    console.log(this.itemArr);
   }
 
   public load(){
@@ -188,6 +214,13 @@ export default class App extends Vue {
     const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
     for(const proj of savedProjects){
       this.projects.push(new DDProject(proj.title, proj.items));
+    }
+  }
+
+  public createItem(k: number){
+    if(this.itemInp[k]){
+      this.projects[this.current].createItem(this.itemInp[k]);
+      this.itemInp.splice(k, 0);
     }
   }
 
@@ -385,6 +418,7 @@ export default class App extends Vue {
 }
 
 .btn{
+  user-select: none;
   cursor: pointer;
   }
   .btn:hover{
@@ -485,13 +519,13 @@ export default class App extends Vue {
   flex: 1;
   display: flex;
   flex-flow: column;
-  padding: 30px;
+  padding: 20px;
 }
 
 #projTitle{
   color:#666;
   box-sizing: border-box;
-  margin-bottom: 30px;
+  margin: 45px 0px 13px 0px;
   font-size: 1.2em;
   /* border-bottom: 1px dashed; */
 }
