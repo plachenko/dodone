@@ -37,11 +37,11 @@ export default class DDProject{
     this.title = title;
   }
 
-  public createItem(text: string, date: object){
+  public createItem(text: string, date: object = new Date()){
     const item = {
       txt: text,
       done: false,
-      date: date || new Date()
+      date: date
     }
 
     this.items.push(item);

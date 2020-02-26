@@ -53,13 +53,13 @@
             </div>
           </div>
         </div>
-        <div v-else style="flex: 1; border: #CCC 2px dashed; border-radius: 10px;">
-          <div >
-            <div id="noProj">no list items!</div>
-          </div>
-        </div>
 
+        <div v-else style="flex: 1; border: #AAA 2px dashed; align-items:center; justify-content: center; display: flex; border-radius: 20px;">
+          <div id="noProj">no list items!</div>
+        </div>
       </div>
+
+      <div style="padding: 20px; border-top: 1px dashed; font-weight: bold; text-align: center;" class="btn" @click="addProjectItem">+ New item</div>
 
     </div>
   </div>
@@ -87,6 +87,7 @@ export default class App extends Vue {
   private current = 0;
   private projSearch = "";
   private adding = false;
+  private itemInp = "";
 
   private search(e: string){
     this.projSearch = e;
@@ -189,6 +190,13 @@ export default class App extends Vue {
       this.projects.push(new DDProject(proj.title, proj.items));
     }
   }
+
+  public addProjectItem(){
+    if(this.itemInp){
+      this.projects[this.current].createItem(this.itemInp);
+      this.itemInp = '';
+    }
+  }
   /*
   private inp = "";
   private current = 0;
@@ -217,12 +225,7 @@ export default class App extends Vue {
     this.projects.push(new DDProject());
   }
 
-  public addProjectItem(){
-    if(this.itemInp){
-      this.projects[this.current].createItem(this.itemInp);
-      this.itemInp = '';
-    }
-  }
+
 
   public removeList(){
     // console.log(i);
@@ -513,8 +516,6 @@ export default class App extends Vue {
   }
   #noProj{
     color:#AAA;
-    justify-self: center;
-    align-self: center
     }
     .projItem{
       margin: 2px 0px;

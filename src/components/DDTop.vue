@@ -1,6 +1,6 @@
 <template>
   <div id="top">
-    <h1 id="logo">DenDo</h1>
+    <h1 id="logo">Lists</h1>
     <!-- <div class="btn" style="padding: 15px 10px 10px 10px; border-right: 1px solid;" @click="$emit('save')">save</div> -->
     <div class="btn" style="padding: 15px 10px 10px 10px" @click="$emit('clear')">clear</div>
     <div class="btn show_btn" @click="$emit('toggleMenu')"> ... </div>
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class DDTop extends Vue {
