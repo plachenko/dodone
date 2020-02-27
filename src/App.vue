@@ -11,6 +11,8 @@
         :disabled="!projectsWithTitle"
         @searchEvt="search" />
 
+      {{current}}
+
       <DDProjList
         @addProject="addProject()"
         @removeProject="removeProject($event)"
@@ -140,9 +142,11 @@ export default class App extends Vue {
     this.adding = true;
 
     this.projSearch = "";
-    this.projects.push(new DDProject());
-    this.current = this.projects.length-1;
+    const proj = new DDProject();
+    this.projects.push(proj);
 
+    const f = this.projects.findIndex(p => p.id);
+    console.log(f);
     // this.select(this.projects.length-1);
   }
 
@@ -151,11 +155,20 @@ export default class App extends Vue {
     if(this.show){
       this.show = false;
     }
+
     this.projects[this.projects.length-1].title = e;
     this.select(this.projects.length-1);
 
     //TODO: impelemnt Autosave
     this.save();
+  }
+
+  public load(){
+    this.current = JSON.parse(localStorage.getItem('current') || "");
+    const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
+    for(const proj of savedProjects){
+      this.projects.push(new DDProject(proj.title, proj.items));
+    }
   }
 
   public save(){
@@ -177,18 +190,8 @@ export default class App extends Vue {
   }
 
   public select(e: number){
-    console.log(e);
     this.current = e;
-    // this.itemArr = this.projects[this.current].items;
     localStorage.setItem('current', this.current+"");
-  }
-
-  public load(){
-    this.current = JSON.parse(localStorage.getItem('current') || "");
-    const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
-    for(const proj of savedProjects){
-      this.projects.push(new DDProject(proj.title, proj.items));
-    }
   }
 
   public createItem(k: number){

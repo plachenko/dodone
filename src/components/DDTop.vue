@@ -1,9 +1,8 @@
 <template>
   <div id="top">
     <h1 id="logo">Lists</h1>
-    <!-- <div class="btn" style="padding: 15px 10px 10px 10px; border-right: 1px solid;" @click="$emit('save')">save</div> -->
-    <div class="btn" style="padding: 15px 10px 10px 10px" @click="$emit('clear')">clear</div>
-    <div class="btn show_btn" @click="$emit('toggleMenu')"> ... </div>
+    <div id="clear_btn" class="btn" @click="$emit('clear')">clear</div>
+    <div id="show_btn" class="btn" @click="$emit('toggleMenu')">...</div>
   </div>
 </template>
 
@@ -29,7 +28,11 @@ export default class DDTop extends Vue {
     box-sizing: border-box;
     }
 
-.show_btn{
+#clear_btn{
+  padding: 15px 10px 10px 10px;
+}
+
+#show_btn{
   user-select: none;
   border-left: 1px solid;
   padding: 20px 20px 10px 20px;
