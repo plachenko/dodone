@@ -11,8 +11,6 @@
         :disabled="!projectsWithTitle"
         @searchEvt="search" />
 
-      {{current}}
-
       <DDProjList
         @addProject="addProject()"
         @removeProject="removeProject($event)"
@@ -21,6 +19,13 @@
         :projects="searchResult"
         :class="{hide: !show}"
         :current="current" />
+      <!--
+      <div v-for="(p, i) in projects" :key="i">
+        {{p.title}}
+
+      </div>
+      -->
+
 
       <div
         v-if="!adding"
@@ -111,7 +116,6 @@ export default class App extends Vue {
   }
 
   private mounted(){
-
     if(localStorage.getItem('projects')){
       this.load();
     }
@@ -131,9 +135,25 @@ export default class App extends Vue {
     })
   }
 
+  get currentItm(){
+    let idx = 0;
+    if(this.projects.length > 1){
+      idx = this.projects.findIndex((i) => i.id == this.projects[k+1].id);
+    }
+    return idx;
+
+  }
+
   public removeProject(k: number){
-    this.projects.splice(k, 1);
-    this.select(k-1);
+
+    let idx = 0;
+    if(this.projects.length > 1){
+      idx = this.projects.findIndex((i) => i.id == this.projects[k+1].id);
+    }
+
+    this.projects.splice(idx, 1);
+    // this.current = idx;
+    // this.select(1);
 
     this.adding = false;
   }
@@ -141,12 +161,12 @@ export default class App extends Vue {
   public addProject(){
     this.adding = true;
 
+
     this.projSearch = "";
     const proj = new DDProject();
     this.projects.push(proj);
 
-    const f = this.projects.findIndex(p => p.id);
-    console.log(f);
+    // const f = this.projects.findIndex(p => p.id);
     // this.select(this.projects.length-1);
   }
 
@@ -157,7 +177,7 @@ export default class App extends Vue {
     }
 
     this.projects[this.projects.length-1].title = e;
-    this.select(this.projects.length-1);
+    this.select(this.currentItm);
 
     //TODO: impelemnt Autosave
     this.save();

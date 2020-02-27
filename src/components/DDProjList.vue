@@ -38,13 +38,6 @@ export default class DDProjList extends Vue {
 
 
   public selectItem(e: number){
-    /*
-    const listEl = this.$refs['projList'].$el;
-    const projEl = this.$refs['projItem'][e].$el;
-
-    listEl.scrollIntoView(projEl);
-    */
-
     this.$emit('selected', e);
   }
 
