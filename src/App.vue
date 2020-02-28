@@ -425,7 +425,6 @@ export default class App extends Vue {
   flex: 1;
   display: flex;
   flex-flow: column;
-  padding: 20px;
   height:100%;
 }
 
@@ -502,7 +501,6 @@ export default class App extends Vue {
   border: #AAA 2px dashed;
   padding: 15px;
   font-weight: bold;
-  margin-bottom: 40px;
   text-align:center;
   border-radius: 10px;
   margin-top: 20px;
