@@ -53,7 +53,7 @@
       <div v-if="projects[current]" id="projCont">
         <div id="projTitle">
           <h2>{{projects[current].title || "Untitled"}}</h2>
-          <div @click="removeProject" class="btn" style="position: absolute; right: 30px; top: 20px; background-color:#F00; padding: 10px; color:#FFF; border-radius: 10px;">remove</div>
+          <div @click="removeProject" class="btn" style="position: absolute; right: 30px; top: -5px; background-color:#F00; padding: 10px; color:#FFF; border-radius: 10px;">remove</div>
         </div>
 
         <div id="projItemsContainer" v-if="projects[current].items">
@@ -429,6 +429,7 @@ export default class App extends Vue {
 }
 
 #projTitle{
+  position: relative;
   color:#666;
   box-sizing: border-box;
   margin: 30px 0px 13px 0px;
