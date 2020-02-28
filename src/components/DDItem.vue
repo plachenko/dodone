@@ -2,7 +2,7 @@
   <div class="projectItem">
 
     <div v-if="!item.text" class="inner_inp">
-      <form id="frm" ref="newItem" @keyup.esc="$emit('remove')" @submit.prevent="$emit('addItem', titleInp)">
+      <form name="projectFrm" id="frm" ref="newItem" @keyup.esc="$emit('remove')" @submit.prevent="$emit('addItem', titleInp)">
         <input
           ref="inp"
           type="text"
@@ -40,6 +40,7 @@ export default class DDProjItem extends Vue{
   current!: boolean;
 
   private items = [];
+  private titleInp = "";
 
   private remove(){
     this.$emit('removeItem');

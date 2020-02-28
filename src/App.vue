@@ -53,23 +53,25 @@
       <div v-if="projects[current]" id="projCont">
         <div id="projTitle">
           <h2>{{projects[current].title || "Untitled"}}</h2>
+          <div @click="removeProject" class="btn" style="position: absolute; right: 30px; top: 20px; background-color:#F00; padding: 10px; color:#FFF; border-radius: 10px;">remove</div>
         </div>
 
         <div id="projItemsContainer" v-if="projects[current].items">
           <div @click="i.done = !i.done" :class="{done: i.done}" class="projItem btn" v-for="(i, k) in projects[current].items" :key="k">
+            <div style="margin-right: 10px;" @click="removeItem(k)">X</div>
             <div class="circle">
               <div></div>
             </div>
-
-
             <span>{{i.txt}}</span>
-
           </div>
           <div v-if="itemArr.length">
               <div v-for="(i,k) in itemArr" :key="k" class="projItem">
-                <form @submit.prevent="createItem(k)">
-                  <input v-model="itemArr[k].txt" />
+                <form name="items" @submit.prevent="createItem(k)">
+                  <input class="inp" v-model="itemArr[k].txt" />
                 </form>
+                <div id="optContainer" style="margin-left: 5px;">
+                  <div class="opt btn" @click="createItem(k)">&#10004;</div>
+                </div>
               </div>
             </div>
         </div>
@@ -151,10 +153,6 @@ export default class App extends Vue {
   */
 
 
-  public checkKey(e: any){
-    console.log(e.which);
-  }
-
   public addListItem(){
     this.itemArr.push({txt: ''});
     // this.projects[this.current].createItem('testing');
@@ -175,6 +173,8 @@ export default class App extends Vue {
 
   public addProject(){
     this.adding = true;
+
+    this.itemArr = [];
 
     this.projSearch = "";
     const proj = new DDProject();
@@ -225,22 +225,20 @@ export default class App extends Vue {
   }
 
   public select(e: number){
+    this.itemArr = [];
     this.current = e;
     localStorage.setItem('current', this.current+"");
   }
 
   public createItem(k: number){
-    if(this.itemArr[k]){
+    if(this.itemArr[k].txt){
       this.projects[this.current].createItem(this.itemArr[k].txt);
-      this.itemArr.splice(k, 1);
     }
+    this.itemArr.splice(k, 1);
   }
 
-  public addProjectItem(){
-    if(this.itemInp){
-      this.projects[this.current].createItem(this.itemInp);
-      this.itemInp = '';
-    }
+  public removeItem(k: number){
+    this.projects[this.current].items.splice(k, 1);
   }
 }
 </script>
@@ -292,8 +290,8 @@ export default class App extends Vue {
       max-width: 300px;
       border-right: 1px solid;
       }
-      .show_btn{
-        display: none;
+      #show_btn{
+        display: none !important;
       }
 }
 #projItemsContainer{
@@ -428,6 +426,7 @@ export default class App extends Vue {
   display: flex;
   flex-flow: column;
   padding: 20px;
+  height:100%;
 }
 
 #projTitle{
@@ -468,6 +467,15 @@ export default class App extends Vue {
       padding: 20px;
       min-height: 20px;
     }
+    .projItem form{
+      width: 100%;
+    }
+    .projItem .inp{
+      box-sizing: border-box;
+      width: 100%;
+      flex: 1;
+      padding: 4px;
+    }
     .projItem:hover{
       background-color:#EEE;
     }
@@ -494,6 +502,7 @@ export default class App extends Vue {
   border: #AAA 2px dashed;
   padding: 15px;
   font-weight: bold;
+  margin-bottom: 40px;
   text-align:center;
   border-radius: 10px;
   margin-top: 20px;
