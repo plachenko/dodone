@@ -2,7 +2,7 @@
   <div class="projectItem">
 
     <div v-if="!project.title" class="inner_inp">
-      <form id="frm" ref="newItem" @keyup.esc="$emit('cancel')" @submit.prevent="$emit('setTitle', titleInp)">
+      <form id="frm" ref="newItem" @keyup.esc="$emit('remove')" @submit.prevent="$emit('setTitle', titleInp)">
         <input
           ref="inp"
           type="text"
@@ -16,8 +16,7 @@
       </div>
     </div>
 
-    <div v-else @click="$emit('selected')" class="inner">
-      {{project.id}}
+    <div v-else @click="$emit('select')" class="inner">
       <span class="proj_title">{{ project.title }}</span>
       <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
     </div>
@@ -35,7 +34,7 @@ export default class DDProjItem extends Vue{
     newItem: HTMLFormElement;
     inp: HTMLInputElement;
   }
-  @Prop({default: {}})
+  @Prop({default: () => new DDProject() })
   project!: DDProject;
 
   @Prop({default: false})
@@ -44,11 +43,12 @@ export default class DDProjItem extends Vue{
   private titleInp = "";
 
   private remove(){
-    this.$emit('cancel');
+    this.$emit('remove');
   }
 
   private add(){
-    this.$emit('setTitle', this.titleInp);
+    const title = this.titleInp ? this.titleInp : "Untitled";
+    this.$emit('setTitle', title);
   }
 
   mounted(){
