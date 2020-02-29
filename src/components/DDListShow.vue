@@ -20,12 +20,14 @@
     </div>
 
     <div id="projItemsContainer" v-if="project.items">
-      <div @click="i.done = !i.done" :class="{done: i.done}" class="projItem btn" v-for="(i, k) in project.items.slice().reverse()" :key="k">
-        <div style="margin-right: 10px;" @click="$emit('removeItem',k)">X</div>
-        <div class="circle">
-          <div></div>
+      <div @click="i.done = !i.done" style="display: flex;" v-for="(i, k) in project.items" :key="k">
+        <div class="btn" style="margin: 2px; background-color: #FFF; display: flex; align-items: center; padding: 20px; box-sizing: border-box; border-radius: 10px 0px 0px 10px" @click="$emit('removeItem',k)">X</div>
+        <div class="projItem btn" :class="{done: i.done}" style="flex: 1;">
+          <div class="circle">
+            <div></div>
+          </div>
+          <span>{{i.txt}} {{i.done}}</span>
         </div>
-        <span>{{i.txt}}</span>
       </div>
     </div>
   </div>
@@ -73,11 +75,10 @@ export default class DDListShow extends Vue{
   display: flex;
   flex-flow: column;
   overflow: auto;
-  padding: 20px;
+  padding: 0px 20px;
   }
   #projBtnCont{
     padding: 20px 20px 10px 20px;
-
   }
 
 #projCont{
@@ -97,7 +98,7 @@ export default class DDListShow extends Vue{
 }
     .projItem{
       margin: 2px 0px;
-      border-radius: 10px;
+      border-radius: 0px 10px 10px 0px;
       background-color:#FFF;
       display: flex;
       padding: 20px;
@@ -136,7 +137,6 @@ export default class DDListShow extends Vue{
   background-color:#BBB;
   border: #AAA 2px dashed;
   padding: 15px;
-  margin-right: 15px;
   font-weight: bold;
   text-align:center;
   border-radius: 10px;

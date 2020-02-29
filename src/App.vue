@@ -29,8 +29,7 @@
         :class="{hide: !show}"
         class="btn add_btn">
         <span>+ New list</span>
-      </div>
-
+        </div>
     </div>
 
     <div id="right" :class="{hide: show}">
@@ -73,6 +72,7 @@ export default class App extends Vue {
   private adding = false;
   private itemInp = [];
   private lastCur = 0;
+  private menu = 1;
 
   $refs!: {
     list: DDListShow;
@@ -177,7 +177,7 @@ export default class App extends Vue {
   }
 
   public removeItem(k: number){
-    this.projects[this.current].items.splice(k, 1);
+    this.projects[this.current].items.splice((this.projects[this.current].items.length - 1) - k, 1);
   }
 }
 </script>
