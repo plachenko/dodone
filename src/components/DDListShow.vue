@@ -33,6 +33,43 @@
     </div>
   </div>
 </template>
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import DDProject from '../util/DDProject';
+
+@Component({})
+export default class DDListShow extends Vue{
+  $refs!: {
+    inpi: HTMLInputElement;
+  }
+
+  @Prop()
+  project!: DDProject;
+
+  private item = "";
+  private adding = false;
+
+  private addListItem(){
+    this.adding = true;
+    this.$nextTick(() => {
+      this.$refs.inpi.focus();
+    });
+  }
+
+  private createItem(){
+    if(this.item){
+      this.$emit('createItem', this.item);
+    }
+
+    this.reset()
+  }
+
+  public reset(){
+    this.adding = false;
+    this.item = "";
+  }
+}
+</script>
 <style>
 #projItemsContainer{
   flex: 1;
@@ -111,40 +148,3 @@
 }
 
 </style>
-<script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-import DDProject from '../util/DDProject';
-
-@Component({})
-export default class DDListShow extends Vue{
-  $refs!: {
-    inpi: HTMLInputElement;
-  }
-
-  @Prop()
-  project!: DDProject;
-
-  private item = "";
-  private adding = false;
-
-  private addListItem(){
-    this.adding = true;
-    this.$nextTick(() => {
-      this.$refs.inpi.focus();
-    });
-  }
-
-  private createItem(){
-    if(this.item){
-      this.$emit('createItem', this.item);
-    }
-
-    this.reset()
-  }
-
-  public reset(){
-    this.adding = false;
-    this.item = "";
-  }
-}
-</script>

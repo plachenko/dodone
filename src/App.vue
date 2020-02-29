@@ -74,6 +74,10 @@ export default class App extends Vue {
   private itemInp = [];
   private lastCur = 0;
 
+  $refs!: {
+    list: DDListShow;
+  }
+
   private search(e: string){
     this.projSearch = e;
   }
