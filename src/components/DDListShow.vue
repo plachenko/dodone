@@ -7,29 +7,26 @@
       <div @click="$emit('removeProject')" class="btn" style="position: absolute; right: 30px; top: -5px; background-color:#F00; padding: 10px; color:#FFF; border-radius: 10px;">remove</div>
     </div>
 
-    <div id="projItemsContainer" v-if="project.items">
+    <div id="projBtnCont">
+      <div v-if="project.title && !adding" @click="addListItem" id="add_list_itm" class="btn">+ Add List Item</div>
+      <div class="projItem" v-if="adding">
+        <form name="items" @submit.prevent="createItem()">
+          <input ref="inpi" class="inp" v-model="item" />
+        </form>
+        <div id="optContainer" style="margin-left: 5px;">
+          <div class="opt btn" @click="createItem()" style="height: 25px">&#10004;</div>
+        </div>
+      </div>
+    </div>
 
-      <div @click="i.done = !i.done" :class="{done: i.done}" class="projItem btn" v-for="(i, k) in project.items" :key="k">
+    <div id="projItemsContainer" v-if="project.items">
+      <div @click="i.done = !i.done" :class="{done: i.done}" class="projItem btn" v-for="(i, k) in project.items.slice().reverse()" :key="k">
         <div style="margin-right: 10px;" @click="$emit('removeItem',k)">X</div>
         <div class="circle">
           <div></div>
         </div>
         <span>{{i.txt}}</span>
       </div>
-
-      <div class="projItem" v-if="adding">
-        <form name="items" @submit.prevent="createItem()">
-          <input ref="inpi" class="inp" v-model="item" />
-        </form>
-        <div id="optContainer" style="margin-left: 5px;">
-          <div class="opt btn" @click="createItem()">&#10004;</div>
-        </div>
-      </div>
-
-    </div>
-
-    <div id="projBtnCont">
-      <div v-if="project.title && !adding" @click="addListItem" id="add_list_itm" class="btn">+ Add List Item</div>
     </div>
   </div>
 </template>
@@ -79,7 +76,8 @@ export default class DDListShow extends Vue{
   padding: 20px;
   }
   #projBtnCont{
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
+
   }
 
 #projCont{
@@ -138,10 +136,11 @@ export default class DDListShow extends Vue{
   background-color:#BBB;
   border: #AAA 2px dashed;
   padding: 15px;
+  margin-right: 15px;
   font-weight: bold;
   text-align:center;
   border-radius: 10px;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 #add_list_itm:hover{
   background-color:#EEE;
