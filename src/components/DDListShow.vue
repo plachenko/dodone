@@ -26,7 +26,7 @@
           <div class="circle">
             <div></div>
           </div>
-          <span>{{k}} {{i.txt}}</span>
+          <span>{{i.txt}}</span>
         </div>
       </div>
     </div>
@@ -61,10 +61,6 @@ export default class DDListShow extends Vue{
     }
 
     this.reset()
-  }
-
-  private setDone(k: number, done: boolean){
-    this.project.setDone(k, done);
   }
 
   public reset(){
