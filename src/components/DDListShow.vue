@@ -4,7 +4,7 @@
 
     <div id="projTitle">
       <h2>{{project.title || "Untitled"}}</h2>
-      <div @click="$emit('removeProject')" class="btn" style="position: absolute; right: 30px; top: -5px; background-color:#F00; padding: 10px; color:#FFF; border-radius: 10px;">remove</div>
+      <div @click="$emit('removeProject')" id="removeList" class="btn">remove</div>
     </div>
 
     <div id="projBtnCont">
@@ -13,20 +13,20 @@
         <form name="items" @submit.prevent="createItem()">
           <input ref="inpi" class="inp" v-model="item" />
         </form>
-        <div id="optContainer" style="margin-left: 5px;">
-          <div class="opt btn" @click="createItem()" style="height: 25px">&#10004;</div>
+        <div id="optContainer">
+          <div class="opt btn" @click="createItem()">&#10004;</div>
         </div>
       </div>
     </div>
 
     <div id="projItemsContainer" v-if="project.items">
-      <div @click="i.done = !i.done" style="display: flex;" v-for="(i, k) in project.items" :key="k">
-        <div class="btn" style="margin: 2px; background-color: #FFF; display: flex; align-items: center; padding: 20px; box-sizing: border-box; border-radius: 10px 0px 0px 10px" @click="$emit('removeItem',k)">X</div>
-        <div class="projItem btn" :class="{done: i.done}" style="flex: 1;">
+      <div style="display: flex;" v-for="(i, k) in project.items.slice().reverse()" :key="k">
+        <div class="btn rmbtn" @click="$emit('removeItem',k)">X</div>
+        <div @click="i.done = !i.done" class="projItem btn" :class="{done: i.done}">
           <div class="circle">
             <div></div>
           </div>
-          <span>{{i.txt}} {{i.done}}</span>
+          <span>{{k}} {{i.txt}}</span>
         </div>
       </div>
     </div>
@@ -63,6 +63,10 @@ export default class DDListShow extends Vue{
     this.reset()
   }
 
+  private setDone(k: number, done: boolean){
+    this.project.setDone(k, done);
+  }
+
   public reset(){
     this.adding = false;
     this.item = "";
@@ -81,11 +85,37 @@ export default class DDListShow extends Vue{
     padding: 20px 20px 10px 20px;
   }
 
+#removeList{
+  position: absolute;
+  right: 30px;
+  top: -5px;
+  background-color:#F00;
+  padding: 10px;
+  color:#FFF;
+  border-radius: 10px;
+}
 #projCont{
   flex: 1;
   display: flex;
   flex-flow: column;
   height:100%;
+}
+
+#optContainer{
+  margin-left: 5px;
+}
+#optContainer .btn{
+  height: 25px
+}
+
+.rmbtn{
+  margin: 2px;
+  background-color: #FFF;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px 0px 0px 10px
 }
 
 #projTitle{
@@ -103,6 +133,7 @@ export default class DDListShow extends Vue{
       display: flex;
       padding: 20px;
       min-height: 20px;
+      flex: 1;
     }
     .projItem form{
       width: 100%;

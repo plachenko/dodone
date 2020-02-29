@@ -1,7 +1,7 @@
 // import moment from 'moment';
 
 export default class DDProject{
-  public items: object[] = [];
+  public items: any[] = [];
   public id !: number;
   public title = "";
   public proj_search = "";

@@ -115,7 +115,11 @@ export default class App extends Vue {
     }
 
     this.projects.splice(id, 1);
-    this.current = this.lastCur;
+    if(this.projects[this.lastCur]){
+      this.current = this.lastCur;
+    } else {
+      this.current = this.projects.length - 1;
+    }
     this.adding = false;
   }
 
@@ -168,6 +172,10 @@ export default class App extends Vue {
 
   public select(e: number){
     this.$refs.list.reset();
+    if(this.adding){
+      this.removeProject()
+      this.adding = false;
+    }
     this.current = e;
     localStorage.setItem('current', this.current+"");
   }
