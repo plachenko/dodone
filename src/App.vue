@@ -2,16 +2,19 @@
   <div id="app">
     <div id="left" :class="{noFlex: !show}">
       <DDTop
+        :menu="menu"
+        @menuChange="menuChange($event)"
         @toggleMenu="show = !show"
         @save="save"
         @clear="clear" />
 
       <DDSearch
+        v-if="menu == 1"
         :class="{hide: !show}"
         :disabled="!projectsWithTitle"
         @searchEvt="search" />
 
-      <div id="projListContainer" :class="{hide: !show}">
+      <div v-if="menu == 1" id="projListContainer" :class="{hide: !show}">
         <DDProjItem
           @setTitle="setTitle($event)"
           @remove="removeProject()"
@@ -24,22 +27,30 @@
       </div>
 
       <div
-        v-if="!adding"
+        v-if="!adding && menu == 1"
         @click="addProject()"
         :class="{hide: !show}"
         class="btn add_btn">
         <span>+ New list</span>
-        </div>
+      </div>
     </div>
 
     <div id="right" :class="{hide: show}">
       <DDListShow
+        v-if="menu == 1"
         ref="list"
         :project="projects[current]"
         @removeItem="removeItem($event)"
         @createItem="createItem($event)"
         @removeProject="removeProject"
          />
+
+      <div v-else-if="menu == 2">
+        <div id="projTitle">
+          <h2>Github</h2>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -105,6 +116,10 @@ export default class App extends Vue {
     return this.projects.filter((item: DDProject) => {
       return this.projSearch.toLowerCase().split(' ').every((i: string) => item.title.toLowerCase().includes(i));
     })
+  }
+
+  public menuChange(e: number){
+    this.menu = e;
   }
 
   public removeProject(){

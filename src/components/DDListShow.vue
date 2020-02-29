@@ -100,9 +100,6 @@ export default class DDListShow extends Vue{
 #optContainer{
   margin-left: 5px;
 }
-#optContainer .btn{
-  height: 25px
-}
 
 .rmbtn{
   margin: 2px;

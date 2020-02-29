@@ -1,16 +1,25 @@
 <template>
   <div id="top">
     <h1 id="logo">Lists</h1>
+
+    <div :class="{cur: menu == i.id}" v-for="(i, k) in menuItems" :key="k" id="clear_btn" class="btn" @click="$emit('menuChange', i.id)">{{i.name}}</div>
     <div id="clear_btn" class="btn" @click="$emit('clear')">clear</div>
     <div id="show_btn" class="btn" @click="$emit('toggleMenu')">...</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
 export default class DDTop extends Vue {
+  @Prop({default: 1})
+  menu !: number;
+
+  private menuItems = [
+    {id: 1, name: 'list'},
+    {id: 2, name: 'GH'}
+  ]
 }
 </script>
 
@@ -18,6 +27,15 @@ export default class DDTop extends Vue {
 #top{
   display: flex;
   border-bottom: 1px solid;
+  }
+  #top .btn {
+    border-right: 1px solid;
+  }
+  #top .btn :last-child{
+    border: none !important;
+  }
+  #top .cur{
+    background-color:#CCC;
   }
   #logo{
     background-color:#666;
