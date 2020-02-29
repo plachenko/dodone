@@ -23,20 +23,6 @@
           :key="k" />
       </div>
 
-      <!--
-      <DDProjList
-        @addProject="addProject()"
-        @removeProject="removeProject($event)"
-        @setTitle="setTitle($event)"
-        @selected="select($event - 1)"
-        :projects="searchResult"
-        :class="{hide: !show}"
-        :current="current" />
-      <div v-for="(p, i) in projects" :key="i">
-        {{p.title}}
-      </div>
-      -->
-
       <div
         v-if="!adding"
         @click="addProject()"
@@ -48,37 +34,13 @@
     </div>
 
     <div id="right" :class="{hide: show}">
-
-      <!-- Projects -->
-      <div v-if="projects[current]" id="projCont">
-        <div id="projTitle">
-          <h2>{{projects[current].title || "Untitled"}}</h2>
-          <div @click="removeProject" class="btn" style="position: absolute; right: 30px; top: -5px; background-color:#F00; padding: 10px; color:#FFF; border-radius: 10px;">remove</div>
-        </div>
-
-        <div id="projItemsContainer" v-if="projects[current].items">
-          <div @click="i.done = !i.done" :class="{done: i.done}" class="projItem btn" v-for="(i, k) in projects[current].items" :key="k">
-            <div style="margin-right: 10px;" @click="removeItem(k)">X</div>
-            <div class="circle">
-              <div></div>
-            </div>
-            <span>{{i.txt}}</span>
-          </div>
-          <div v-if="itemArr.length">
-              <div v-for="(i,k) in itemArr" :key="k" class="projItem">
-                <form name="items" @submit.prevent="createItem(k)">
-                  <input class="inp" v-model="itemArr[k].txt" />
-                </form>
-                <div id="optContainer" style="margin-left: 5px;">
-                  <div class="opt btn" @click="createItem(k)">&#10004;</div>
-                </div>
-              </div>
-            </div>
-        </div>
-
-        <div v-if="projects[current].title" @click="addListItem" id="add_list_itm" class="btn">+ Add List Item</div>
-      </div>
-
+      <DDListShow
+        ref="list"
+        :project="projects[current]"
+        @removeItem="removeItem($event)"
+        @createItem="createItem($event)"
+        @removeProject="removeProject"
+         />
     </div>
   </div>
 </template>
@@ -87,10 +49,10 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import DDProject from './util/DDProject';
 import DDTop from './components/DDTop.vue';
-import DDProjList from './components/DDProjList.vue';
 import DDSearch from './components/DDSearch.vue';
 import DDProjItem from './components/DDProjItem.vue';
 import DDItem from './components/DDProjItem.vue';
+import DDListShow from './components/DDListShow.vue';
 
 import { EventBus }  from './eventbus';
 
@@ -98,9 +60,9 @@ import { EventBus }  from './eventbus';
   components:{
     DDTop,
     DDSearch,
-    DDProjList,
     DDProjItem,
-    DDItem
+    DDItem,
+    DDListShow
   }
 })
 export default class App extends Vue {
@@ -109,7 +71,6 @@ export default class App extends Vue {
   private current = 0;
   private projSearch = "";
   private adding = false;
-  private itemArr: any = [];
   private itemInp = [];
   private lastCur = 0;
 
@@ -142,23 +103,6 @@ export default class App extends Vue {
     })
   }
 
-  /*
-  get currentItm(){
-    return this.projects.findIndex((i: any) => {
-      // i.id == this.projects[this.current].id);
-      console.log(i);
-      return 0;
-    }
-  }
-  */
-
-
-  public addListItem(){
-    this.itemArr.push({txt: ''});
-    // this.projects[this.current].createItem('testing');
-    // this.save();
-  }
-
   public removeProject(){
     let id = 0;
 
@@ -174,16 +118,13 @@ export default class App extends Vue {
   public addProject(){
     this.adding = true;
 
-    this.itemArr = [];
+    this.$refs.list.reset();
 
     this.projSearch = "";
     const proj = new DDProject();
     this.projects.push(proj);
     this.lastCur = this.current;
     this.current = this.projects.length - 1;
-
-    // const f = this.projects.findIndex(p => p.id);
-    // this.select(this.projects.length-1);
   }
 
   public setTitle(e: string){
@@ -193,9 +134,6 @@ export default class App extends Vue {
     }
 
     this.projects[this.projects.length-1].title = e;
-
-    //TODO: impelemnt Autosave
-    // this.save();
   }
 
   public load(){
@@ -225,16 +163,13 @@ export default class App extends Vue {
   }
 
   public select(e: number){
-    this.itemArr = [];
+    this.$refs.list.reset();
     this.current = e;
     localStorage.setItem('current', this.current+"");
   }
 
-  public createItem(k: number){
-    if(this.itemArr[k].txt){
-      this.projects[this.current].createItem(this.itemArr[k].txt);
-    }
-    this.itemArr.splice(k, 1);
+  public createItem(e: string){
+    this.projects[this.current].createItem(e);
   }
 
   public removeItem(k: number){
@@ -294,13 +229,7 @@ export default class App extends Vue {
         display: none !important;
       }
 }
-#projItemsContainer{
-  flex: 1;
-  display: flex;
-  flex-flow: column;
-  overflow: auto;
-  padding-right: 10px;
-  }
+
 #projListContainer{
   flex: 1;
   display: flex;
@@ -308,6 +237,27 @@ export default class App extends Vue {
   overflow: auto;
   direction: rtl;
   }
+  #projList{
+    display: flex;
+    flex-flow: column;
+    }
+.search{
+  padding: 10px;
+  border-bottom: 1px solid;
+  }
+  .search input{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    }
+
+.add_btn{
+  padding: 20px;
+  font-weight: bold;
+  box-sizing: border-box;
+  border-top: #CCC 1px dashed;
+  }
+
 .submitCont{
   border-top: 2px solid;
   box-sizing: border-box;
@@ -421,22 +371,6 @@ export default class App extends Vue {
   padding: 15px;
   }
 
-#projCont{
-  flex: 1;
-  display: flex;
-  flex-flow: column;
-  height:100%;
-}
-
-#projTitle{
-  position: relative;
-  color:#666;
-  box-sizing: border-box;
-  margin: 30px 0px 13px 0px;
-  font-size: 1.2em;
-  padding-bottom: 25px;
-  border-bottom:  2px dashed;
-}
 
 #projItemCont{
   flex: 1;
@@ -459,55 +393,6 @@ export default class App extends Vue {
   #noProj{
     color:#AAA;
     }
-    .projItem{
-      margin: 5px 0px;
-      border-radius: 10px;
-      background-color:#FFF;
-      display: flex;
-      padding: 20px;
-      min-height: 20px;
-    }
-    .projItem form{
-      width: 100%;
-    }
-    .projItem .inp{
-      box-sizing: border-box;
-      width: 100%;
-      flex: 1;
-      padding: 4px;
-    }
-    .projItem:hover{
-      background-color:#EEE;
-    }
-    .circle{
-      align-self: center;
-      border: 2px solid;
-      padding: 3px;
-      box-sizing: border-box;
-      float: left;
-      margin-right: 10px;
-      border-radius: 10px;
-    }
-    .done .circle div{
-      background-color:#020;
-      }
-    .circle div{
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      }
 
-#add_list_itm{
-  background-color:#BBB;
-  border: #AAA 2px dashed;
-  padding: 15px;
-  font-weight: bold;
-  text-align:center;
-  border-radius: 10px;
-  margin-top: 20px;
-}
-#add_list_itm:hover{
-  background-color:#EEE;
-}
 </style>
 
