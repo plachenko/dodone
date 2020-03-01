@@ -20,21 +20,30 @@
     </div>
 
     <div id="projItemsContainer" v-if="project.items">
-      <div style="display: flex;" v-for="(i, k) in project.items.slice().reverse()" :key="k">
-        <div class="btn rmbtn" @click="$emit('removeItem',k)">X</div>
-        <div @click="i.done = !i.done" class="projItem btn" :class="{done: i.done}">
-          <div class="circle">
-            <div></div>
-          </div>
-          <span>{{i.txt}}</span>
+      <div v-for="(d, key) in dateGroups" :key="key">
+        <div class="date_sep">
+          <span>{{formatDate(d[0].date)}}</span>
         </div>
+        <div style="display: flex; flex-wrap: wrap;" v-for="(i, k) in d" :key="k">
+          <div class="btn rmbtn" @click="$emit('removeItem',k)">X</div>
+          <div @click="i.done = !i.done" class="projItem btn" :class="{done: i.done}">
+            <div class="circle">
+              <div></div>
+            </div>
+            <span>{{i.txt}}</span>
+          </div>
+        </div>
+
       </div>
     </div>
+
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import DDProject from '../util/DDProject';
+import moment from 'moment';
+import _ from 'lodash';
 
 @Component({})
 export default class DDListShow extends Vue{
@@ -53,6 +62,14 @@ export default class DDListShow extends Vue{
     this.$nextTick(() => {
       this.$refs.inpi.focus();
     });
+  }
+
+  get dateGroups(){
+    return _.groupBy(this.project.items.slice().reverse(), (i: any) => moment(i.date).startOf('day').format())
+  }
+
+  private formatDate(d: Date){
+    return moment(d).format('MM/DD/YYYY');
   }
 
   private createItem(){
@@ -80,6 +97,19 @@ export default class DDListShow extends Vue{
   #projBtnCont{
     padding: 20px 20px 10px 20px;
   }
+  .date_sep{
+    flex-basis: 100%;
+    text-align: center;
+    border-bottom: 1px solid;
+    margin: 10px 0px 20px 0px;
+    height: 9px;
+    }
+  .date_sep span{
+    display: inline-block;
+    background-color:#CCC;
+    padding: 0px 5px;
+    color:#666;
+    }
 
 #removeList{
   position: absolute;
