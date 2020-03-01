@@ -22,7 +22,9 @@
     <div id="projItemsContainer" v-if="project.items">
       <div v-for="(d, key) in dateGroups" :key="key">
         <div class="date_sep">
-          <span>{{formatDate(d[0].date)}}</span>
+          <div class="date_sep_border">
+            <span><strong>{{formatDate(d[0].date)}}</strong> ({{d.length}} items)</span>
+          </div>
         </div>
         <div style="display: flex; flex-wrap: wrap;" v-for="(i, k) in d" :key="k">
           <div class="btn rmbtn" @click="$emit('removeItem',k)">X</div>
@@ -102,11 +104,14 @@ export default class DDListShow extends Vue{
     position: sticky;
     top: 0px;
     background-color:#CCC;
-    height: 10px;
     text-align: center;
-    border-bottom: 1px solid;
-    margin: 10px 0px 20px 0px;
-    height: 9px;
+    height: 20px;
+    }
+    .date_sep_border{
+      height: 9px;
+      width: 100%;
+      border-bottom: 1px solid;
+      margin: 10px 0px 20px 0px;
     }
   .date_sep span{
     display: inline-block;
