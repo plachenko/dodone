@@ -18,7 +18,7 @@ export default class DDTop extends Vue {
 
   private menuItems = [
     {id: 1, name: 'list'},
-    {id: 2, name: 'GH'}
+    // {id: 2, name: 'GH'}
   ]
 }
 </script>

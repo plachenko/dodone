@@ -26,6 +26,13 @@
           :key="k" />
       </div>
 
+      <div v-if="menu==2">
+        <div class="projectItem">
+          <!-- <div class="inner btn">Github</div> -->
+          <a :href="`https://github.com/login/oauth/authorize?client_id=${clientID}`" style="display: block;" class="inner btn" @click="loginToGH">Login to github</a>
+        </div>
+      </div>
+
       <div
         v-if="!adding && menu == 1"
         @click="addProject()"
@@ -84,6 +91,7 @@ export default class App extends Vue {
   private itemInp = [];
   private lastCur = 0;
   private menu = 1;
+  private clientID = process.env.VUE_APP_CLIENTID;
 
   $refs!: {
     list: DDListShow;
@@ -201,6 +209,23 @@ export default class App extends Vue {
 
   public removeItem(k: number){
     this.projects[this.current].items.splice((this.projects[this.current].items.length - 1) - k, 1);
+  }
+
+  private loginToGH(){
+
+    /*
+    fetch(`https://github.com/login/oauth/authorize`, {
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'applicaiton/json',
+      },
+      mode:'no-cors'
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      });
+    */
   }
 }
 </script>

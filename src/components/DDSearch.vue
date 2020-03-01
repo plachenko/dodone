@@ -16,7 +16,7 @@ export default class DDSearch extends Vue {
   disabled !: boolean;
 
   @Watch('projSearch')
-  onChange(val: string){
+  onChange(){
     this.$emit('searchEvt', this.projSearch)
   }
 

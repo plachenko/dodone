@@ -18,14 +18,14 @@
 
     <div v-else @click="$emit('select')" class="inner">
       <span class="proj_title">{{ project.title }}</span>
-      <span class="item_count" v-if="project.items.length">{{project.items.length}}</span>
+      <span class="item_count" :class="{right: itemsDone.length}" v-if="project.items.length - itemsDone.length">{{project.items.length - itemsDone.length}}</span>
+      <span class="item_count donei" :class="{left: project.items.length > itemsDone.length}" v-if="itemsDone.length">{{itemsDone.length}}</span>
     </div>
 
   </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { EventBus } from '../eventbus';
 import DDProject from '../util/DDProject';
 
 @Component({})
@@ -39,6 +39,10 @@ export default class DDProjItem extends Vue{
 
   @Prop({default: false})
   current!: boolean;
+
+  get itemsDone(){
+    return this.project.items.filter(i => i.done == true);
+  }
 
   private titleInp = "";
 
@@ -68,6 +72,16 @@ export default class DDProjItem extends Vue{
   margin-right: 10px;
   flex-basis: 70%;
   }
+.right{
+  border-radius: 0px 10px 10px 0px !important;
+}
+.donei{
+  background-color:#444 !important;
+  color:#FFF;
+}
+.left{
+  border-radius: 10px 0px 0px 10px !important;
+}
 
 .projectItem{
   border-bottom: #CCC 1px solid;
