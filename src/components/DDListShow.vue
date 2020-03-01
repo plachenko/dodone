@@ -99,6 +99,10 @@ export default class DDListShow extends Vue{
   }
   .date_sep{
     flex-basis: 100%;
+    position: sticky;
+    top: 0px;
+    background-color:#CCC;
+    height: 10px;
     text-align: center;
     border-bottom: 1px solid;
     margin: 10px 0px 20px 0px;
