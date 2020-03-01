@@ -1,6 +1,6 @@
 <template>
   <div id="top">
-    <h1 id="logo">Lists</h1>
+    <h1 id="logo">DenDo</h1>
 
     <div :class="{cur: menu == i.id}" v-for="(i, k) in menuItems" :key="k" id="clear_btn" class="btn" @click="$emit('menuChange', i.id)">{{i.name}}</div>
     <div id="clear_btn" class="btn" @click="$emit('clear')">clear</div>
