@@ -4,12 +4,13 @@
 
     <div id="projTitle">
       <h2>{{project.title || "Untitled"}}</h2>
+      <div @click="showDone = !showDone" id="hideDone" class="btn">hide done</div>
       <div @click="$emit('removeProject')" id="removeList" class="btn">remove</div>
     </div>
 
     <div id="projBtnCont">
       <div v-if="project.title && !adding" @click="addListItem" id="add_list_itm" class="btn">+ Add List Item</div>
-      <div class="projItem" v-if="adding">
+      <div class="projItem" id="projInp" v-if="adding">
         <form name="items" @submit.prevent="createItem()">
           <input ref="inpi" class="inp" v-model="item" />
         </form>
@@ -58,6 +59,7 @@ export default class DDListShow extends Vue{
 
   private item = "";
   private adding = false;
+  private showDone = false;
 
   private addListItem(){
     this.adding = true;
@@ -66,8 +68,16 @@ export default class DDListShow extends Vue{
     });
   }
 
+  get items(){
+    if(this.showDone){
+      return this.project.items.filter(i => i.done != true);
+    }else{
+      return this.project.items;
+    }
+  }
+
   get dateGroups(){
-    return _.groupBy(this.project.items.slice().reverse(), (i: any) => moment(i.date).startOf('day').format())
+    return _.groupBy(this.items.slice().reverse(), (i: any) => moment(i.date).startOf('day').format())
   }
 
   private formatDate(d: Date){
@@ -120,6 +130,17 @@ export default class DDListShow extends Vue{
     color:#666;
     }
 
+
+#hideDone{
+  background-color:#666;
+  color:#FFF;
+  padding: 10px;
+  position: absolute;
+  top: -5px;
+  right: 120px;
+  border-radius: 10px;
+}
+
 #removeList{
   position: absolute;
   right: 30px;
@@ -138,6 +159,10 @@ export default class DDListShow extends Vue{
 
 #optContainer{
   margin-left: 5px;
+}
+
+#projInp{
+  border-radius: 10px !important;
 }
 
 .rmbtn{
