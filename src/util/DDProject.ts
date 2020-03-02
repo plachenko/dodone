@@ -19,6 +19,9 @@ export default class DDProject{
     if(items.length){
       for(const i of items){
         i.started = false;
+        if(typeof i.timeSpent == 'undefined'){
+          i.timeSpent = 0;
+        }
       }
       this.items = items;
     }
@@ -53,7 +56,7 @@ export default class DDProject{
     this.items.push(item);
   }
 
-  public startTick(i: any){
+  public addTime(i: any){
     // const startedEl = this.items.find(i => i.started);
     console.log(i.txt)
     /*

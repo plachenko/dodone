@@ -111,6 +111,14 @@ export default class App extends Vue {
       this.load();
     }
 
+    setInterval(() =>{
+      const startedEl = this.projects[this.current].items.find(i => i.started);
+
+      if(startedEl){
+        startedEl.timeSpent++
+      }
+    }, 1000);
+
     if(!this.projects.length){
       this.show = true;
     }

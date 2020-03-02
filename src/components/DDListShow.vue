@@ -27,17 +27,16 @@
             <span><strong>{{formatDate(d[0].date)}}</strong> ({{d.length}} items)</span>
           </div>
         </div>
-        <div style="display: flex; flex-wrap: wrap;" v-for="(i, k) in d" :key="k">
+        <div :class="{started: i.started}" style="display: flex; flex-wrap: wrap;" v-for="(i, k) in d" :key="k">
           <div class="btn rmbtn" @click="$emit('removeItem',k)">X</div>
-          <div @click="i.done = !i.done" class="projItem btn" :class="{done: i.done}">
+          <div @click="setDone(i)" class="projItem btn" :class="{done: i.done}">
             <div class="circle">
               <div></div>
             </div>
             <span>{{i.txt}}</span>
           </div>
           <div class="btn projStart" @click="start(k)">
-            <span v-if="i.timeSpent">{{formatTimeSpent(i.timeSpent)}}</span>
-            <span v-else>Start</span>
+            <span>{{formatTimeSpent(i.timeSpent)}}</span>
           </div>
         </div>
 
@@ -101,9 +100,10 @@ export default class DDListShow extends Vue{
       startedEl.started = false;
     }
 
-    this.items[r].started = true;
-    this.project.startTick(this.items[r]);
-    // this.project.startItem(r);
+    if(startedEl != this.items[r] && this.items[r].done == false){
+      this.items[r].started = true;
+    }
+
   }
 
   private formatTimeSpent(s: number){
@@ -112,6 +112,13 @@ export default class DDListShow extends Vue{
 
   private formatDate(d: Date){
     return moment(d).format('MM/DD/YYYY');
+  }
+
+  private setDone(i: any){
+    i.done = !i.done;
+    if(i.done == true){
+      i.started = false;
+    }
   }
 
   private createItem(){
@@ -160,7 +167,10 @@ export default class DDListShow extends Vue{
     color:#666;
     }
 
-
+.started{
+  background-color: #F00 !important;
+  border-radius: 10px;
+}
 #hideDone{
   background-color:#666;
   color:#FFF;
