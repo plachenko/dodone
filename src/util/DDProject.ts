@@ -8,6 +8,7 @@ export default class DDProject{
   public projects = [];
   public tempTitle = "Untitled"
   public static latestId: number;
+  private timer!: any;
 
   constructor(title = '', items = []){
     this.title = title;
@@ -16,6 +17,9 @@ export default class DDProject{
     }
 
     if(items.length){
+      for(const i of items){
+        i.started = false;
+      }
       this.items = items;
     }
   }
@@ -41,9 +45,32 @@ export default class DDProject{
     const item = {
       txt: text,
       done: false,
+      started: false,
+      timeSpent: 0,
       date: date
     }
 
     this.items.push(item);
+  }
+
+  public startTick(i: any){
+    // const startedEl = this.items.find(i => i.started);
+    console.log(i.txt)
+    /*
+    if(!startedEl.timeSpent){
+      startedEl.timeSpent = 0;
+    }
+
+    if(!this.timer){
+      this.timer = setInterval(() => {
+        startedEl.timeSpent++;
+      }, 1000);
+    }
+    */
+  }
+
+  public stopItem(){
+    clearInterval(this.timer);
+    this.timer = null;
   }
 }

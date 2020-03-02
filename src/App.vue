@@ -262,6 +262,15 @@ export default class App extends Vue {
         .hide #projListContainer{
           direction: ltr !important;
         }
+
+        .projItem{
+          flex-basis: 30% !important;
+        }
+}
+@media (max-width: 1000px) and (min-width: 600px){
+      .projItem{
+        flex-basis: 20% !important;
+      }
 }
 
 @media (min-width: 600px){
@@ -279,6 +288,9 @@ export default class App extends Vue {
       }
       #show_btn{
         display: none !important;
+      }
+      .projItem{
+        flex-basis: 70%;
       }
 }
 

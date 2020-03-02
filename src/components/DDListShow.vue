@@ -3,7 +3,7 @@
     <!-- Projects -->
 
     <div id="projTitle">
-      <h2>{{project.title || "Untitled"}}</h2>
+      <h2>{{project.title || "Untitled"}} {{formatTimeSpent(timeTotal)}}</h2>
       <div @click="showDone = !showDone" id="hideDone" class="btn">hide done</div>
       <div @click="$emit('removeProject')" id="removeList" class="btn">remove</div>
     </div>
@@ -34,6 +34,10 @@
               <div></div>
             </div>
             <span>{{i.txt}}</span>
+          </div>
+          <div class="btn projStart" @click="start(k)">
+            <span v-if="i.timeSpent">{{formatTimeSpent(i.timeSpent)}}</span>
+            <span v-else>Start</span>
           </div>
         </div>
 
@@ -78,6 +82,32 @@ export default class DDListShow extends Vue{
 
   get dateGroups(){
     return _.groupBy(this.items.slice().reverse(), (i: any) => moment(i.date).startOf('day').format())
+  }
+
+  get timeTotal(){
+    let total = 0;
+    this.project.items.forEach((i) => {
+      total += i.timeSpent;
+    })
+
+    return total;
+  }
+
+  private start(k: number){
+    const r = (this.items.length - 1) - k;
+
+    const startedEl = this.items.find(i => i.started);
+    if(startedEl){
+      startedEl.started = false;
+    }
+
+    this.items[r].started = true;
+    this.project.startTick(this.items[r]);
+    // this.project.startItem(r);
+  }
+
+  private formatTimeSpent(s: number){
+    return moment().hour(0).minute(0).second(s).format('HH:mm:ss');
   }
 
   private formatDate(d: Date){
@@ -183,14 +213,28 @@ export default class DDListShow extends Vue{
   padding: 20px;
   border-bottom:  2px dashed;
 }
-    .projItem{
-      margin: 2px 0px;
+  .projStart{
+      margin: 2px;
       border-radius: 0px 10px 10px 0px;
       background-color:#FFF;
       display: flex;
       padding: 20px;
       min-height: 20px;
       flex: 1;
+      flex-basis: 1%;
+  }
+  .projStart:hover{
+    background-color:#EEE !important;
+
+  }
+    .projItem{
+      margin: 2px 0px;
+      background-color:#FFF;
+      display: flex;
+      padding: 20px;
+      min-height: 20px;
+      flex: 1;
+      flex-basis: 40%;
     }
     .projItem form{
       width: 100%;
