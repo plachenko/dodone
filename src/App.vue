@@ -111,15 +111,7 @@ export default class App extends Vue {
       this.load();
     }
 
-    setInterval(() =>{
-      if(this.projects.length){
-        const startedEl = this.projects[this.current].items.find(i => i.started);
-
-        if(startedEl){
-          startedEl.timeSpent++
-        }
-      }
-    }, 1000);
+    this.startTicker();
 
     if(!this.projects.length){
       this.show = true;
@@ -134,6 +126,18 @@ export default class App extends Vue {
     return this.projects.filter((item: DDProject) => {
       return this.projSearch.toLowerCase().split(' ').every((i: string) => item.title.toLowerCase().includes(i));
     })
+  }
+
+  public startTicker(){
+    setInterval(() =>{
+      if(this.projects.length){
+        const startedEl = this.projects[this.current].items.find(i => i.started);
+
+        if(startedEl){
+          startedEl.timeSpent++
+        }
+      }
+    }, 1000);
   }
 
   public menuChange(e: number){

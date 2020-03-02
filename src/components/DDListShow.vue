@@ -28,17 +28,17 @@
           </div>
         </div>
         <div :class="{started: i.started}" style="display: flex; flex-wrap: wrap;" v-for="(i, k) in d" :key="k">
-          <div class="btn rmbtn" @click="$emit('removeItem',k)">X</div>
+          <div class="btn rmbtn" @click="$emit('removeItem',i.idx)">X</div>
           <div @click="setDone(i)" class="projItem btn" :class="{done: i.done}">
             <div class="circle">
               <div></div>
             </div>
-            <span>{{i.txt}}</span>
+            <span>{{i.idx}}) {{i.txt}}</span>
           </div>
-          <div class="btn projInner" @click="resetTime(k)" v-if="i.timeSpent && !i.started">
+          <div class="btn projInner" @click="resetTime(i.idx)" v-if="i.timeSpent && !i.started">
             <span>Reset</span>
           </div>
-          <div class="btn projStart" @click="start(k)">
+          <div class="btn projStart" @click="start(i.idx)">
             <span>{{formatTimeSpent(i.timeSpent)}}</span>
           </div>
         </div>
@@ -83,7 +83,9 @@ export default class DDListShow extends Vue{
   }
 
   get dateGroups(){
-    return _.groupBy(this.items.slice().reverse(), (i: any) => moment(i.date).startOf('day').format())
+    const arr = this.items.slice().reverse();
+    arr.forEach((i, idx) => i.idx = idx);
+    return _.groupBy(arr, (i: any) => moment(i.date).startOf('minute').format())
   }
 
   get timeTotal(){
