@@ -300,7 +300,7 @@ export default class App extends Vue {
         display: none !important;
       }
       .projItem{
-        flex-basis: 70%;
+        flex-basis: 60%;
       }
 }
 

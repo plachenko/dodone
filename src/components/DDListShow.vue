@@ -35,6 +35,9 @@
             </div>
             <span>{{i.txt}}</span>
           </div>
+          <div class="btn projInner" @click="resetTime(k)" v-if="i.timeSpent && !i.started">
+            <span>Reset</span>
+          </div>
           <div class="btn projStart" @click="start(k)">
             <span>{{formatTimeSpent(i.timeSpent)}}</span>
           </div>
@@ -90,6 +93,11 @@ export default class DDListShow extends Vue{
     })
 
     return total;
+  }
+
+  private resetTime(k: number){
+    const r = (this.items.length - 1) - k;
+    this.items[r].timeSpent = 0;
   }
 
   private start(k: number){
@@ -237,6 +245,16 @@ export default class DDListShow extends Vue{
     background-color:#EEE !important;
 
   }
+    .projInner{
+      flex: 1;
+      margin: 2px 0px 2px 2px;
+      background-color:#FFF;
+      display: flex;
+      padding: 20px;
+      min-height: 20px;
+      flex: 1;
+    }
+
     .projItem{
       margin: 2px 0px;
       background-color:#FFF;
