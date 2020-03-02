@@ -85,7 +85,7 @@ export default class DDListShow extends Vue{
   get dateGroups(){
     const arr = this.items.slice().reverse();
     arr.forEach((i, idx) => i.idx = idx);
-    return _.groupBy(arr, (i: any) => moment(i.date).startOf('minute').format())
+    return _.groupBy(arr, (i: any) => moment(i.date).startOf('day').format())
   }
 
   get timeTotal(){
