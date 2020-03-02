@@ -44,10 +44,10 @@
             </div>
             <span>{{i.txt}}</span>
           </div>
-          <div class="btn projInner" @click="resetTime(i.idx)" v-if="i.timeSpent && !i.started">
+          <div class="btn projInner" @click="resetTime(i.idx)" v-if="!i.done && i.timeSpent && !i.started">
             <span>Reset</span>
           </div>
-          <div class="btn projStart" @click="start(i.idx)">
+          <div :class="{doneT: i.done}" class="btn projStart" @click="start(i.idx)">
             <span>{{formatTimeSpent(i.timeSpent)}}</span>
           </div>
         </div>
@@ -334,6 +334,11 @@ h2:hover{
       float: left;
       margin-right: 10px;
       border-radius: 10px;
+    }
+    .doneT{
+      color:#666;
+      background-color:#DDD;
+      cursor: default !important;
     }
     .done .circle div{
       background-color:#020;
