@@ -112,10 +112,12 @@ export default class App extends Vue {
     }
 
     setInterval(() =>{
-      const startedEl = this.projects[this.current].items.find(i => i.started);
+      if(this.projects.length){
+        const startedEl = this.projects[this.current].items.find(i => i.started);
 
-      if(startedEl){
-        startedEl.timeSpent++
+        if(startedEl){
+          startedEl.timeSpent++
+        }
       }
     }, 1000);
 
