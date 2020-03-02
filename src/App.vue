@@ -47,6 +47,7 @@
         v-if="menu == 1"
         ref="list"
         :project="projects[current]"
+        :current="current"
         @removeItem="removeItem($event)"
         @createItem="createItem($event)"
         @removeProject="removeProject"

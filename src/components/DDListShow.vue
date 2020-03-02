@@ -3,7 +3,16 @@
     <!-- Projects -->
 
     <div id="projTitle">
-      <h2>{{project.title || "Untitled"}} {{formatTimeSpent(timeTotal)}}</h2>
+      <div style="width: 100%; float:left;">
+        <div v-if="titleRename">
+          <form style="float:left;" @submit.prevent="changeTitle">
+            <input id="titleInp" style="font-size: 1.5em; padding: 10px;" ref="titleInp" v-model="titleName" type="text">
+            <div class="opt btn" @click="changeTitle">&#10004;</div>
+          </form>
+        </div>
+        <h2 v-else @click="renameTitle">{{project.title || "Untitled"}} </h2>
+      </div>
+      <span style="display: inline-block; border-top: 2px solid; padding-top: 6px; margin-top:5px;">Total time: {{formatTimeSpent(timeTotal)}}</span>
       <div @click="showDone = !showDone" id="hideDone" class="btn">hide done</div>
       <div @click="$emit('removeProject')" id="removeList" class="btn">remove</div>
     </div>
@@ -49,7 +58,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import DDProject from '../util/DDProject';
 import moment from 'moment';
 import _ from 'lodash';
@@ -58,20 +67,35 @@ import _ from 'lodash';
 export default class DDListShow extends Vue{
   $refs!: {
     inpi: HTMLInputElement;
+    titleInp: HTMLInputElement;
   }
 
   @Prop()
   project!: DDProject;
 
+  @Prop()
+  current!: number;
+
+  @Watch('current')
+  onCurrentChange(v: number){
+    this.titleRename = false;
+  }
+
   private item = "";
   private adding = false;
   private showDone = false;
+  private titleRename = false;
+  private titleName = "";
 
   private addListItem(){
     this.adding = true;
     this.$nextTick(() => {
       this.$refs.inpi.focus();
     });
+  }
+
+  mounted(){
+    this.titleRename = false;
   }
 
   get items(){
@@ -97,6 +121,14 @@ export default class DDListShow extends Vue{
     return total;
   }
 
+  private renameTitle(){
+    this.titleName = this.project.title;
+    this.titleRename = true;
+    this.$nextTick(()=>{
+      this.$refs.titleInp.focus();
+    });
+  }
+
   private resetTime(k: number){
     const r = (this.items.length - 1) - k;
     this.items[r].timeSpent = 0;
@@ -114,6 +146,13 @@ export default class DDListShow extends Vue{
       this.items[r].started = true;
     }
 
+  }
+
+  private changeTitle(){
+    this.titleRename = false;
+    if(this.titleName){
+      this.project.title = this.titleName;
+    }
   }
 
   private formatTimeSpent(s: number){
@@ -146,6 +185,15 @@ export default class DDListShow extends Vue{
 }
 </script>
 <style>
+h2{
+  padding: 5px;
+  float:left;
+  user-select: none;
+  min-width: 160px;
+}
+h2:hover{
+  background-color:#FFF;
+}
 #projItemsContainer{
   flex: 1;
   display: flex;
@@ -231,7 +279,7 @@ export default class DDListShow extends Vue{
   box-sizing: border-box;
   font-size: 1.2em;
   padding: 20px;
-  border-bottom:  2px dashed;
+  border-bottom:  1px dashed;
 }
   .projStart{
       margin: 2px;
