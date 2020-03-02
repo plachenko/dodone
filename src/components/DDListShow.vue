@@ -33,7 +33,7 @@
             <div class="circle">
               <div></div>
             </div>
-            <span>{{i.idx}}) {{i.txt}}</span>
+            <span>{{i.txt}}</span>
           </div>
           <div class="btn projInner" @click="resetTime(i.idx)" v-if="i.timeSpent && !i.started">
             <span>Reset</span>
