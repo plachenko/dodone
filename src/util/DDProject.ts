@@ -8,9 +8,9 @@ export default class DDProject{
   public projects = [];
   public tempTitle = "Untitled"
   public static latestId: number;
-  private timer!: any;
+  private timer !: any;
 
-  constructor(title = '', items = []){
+  constructor(title = '', items: any = []){
     this.title = title;
     if(!this.id){
       this.id = DDProject.incrementId();
@@ -54,22 +54,6 @@ export default class DDProject{
     }
 
     this.items.push(item);
-  }
-
-  public addTime(i: any){
-    // const startedEl = this.items.find(i => i.started);
-    console.log(i.txt)
-    /*
-    if(!startedEl.timeSpent){
-      startedEl.timeSpent = 0;
-    }
-
-    if(!this.timer){
-      this.timer = setInterval(() => {
-        startedEl.timeSpent++;
-      }, 1000);
-    }
-    */
   }
 
   public stopItem(){
