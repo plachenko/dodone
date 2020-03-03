@@ -6,8 +6,8 @@
       <div style="width: 100%; float:left;">
         <div v-if="titleRename">
           <form style="float:left;" @submit.prevent="changeTitle">
-            <input id="titleInp" style="font-size: 1.5em; padding: 10px;" ref="titleInp" v-model="titleName" type="text">
-            <div class="opt btn" @click="changeTitle">&#10004;</div>
+            <input id="titleInp" @blur.prevent="titleRename = false" ref="titleInp" v-model="titleName" type="text">
+            <div class="opt btn" id="textInpSubmit" @click="changeTitle">&#10004;</div>
           </form>
         </div>
         <h2 v-else @click="renameTitle">{{project.title || "Untitled"}} </h2>
@@ -239,6 +239,12 @@ h2:hover{
   border-radius: 10px;
 }
 
+#titleInp{
+  float:left;
+  font-size: 1.5em;
+  padding: 10px;
+}
+
 #removeList{
   position: absolute;
   right: 30px;
@@ -271,6 +277,12 @@ h2:hover{
   padding: 20px;
   box-sizing: border-box;
   border-radius: 10px 0px 0px 10px
+}
+#textInpSubmit{
+  float: left;
+  margin-left: 5px;
+  padding: 14px;
+  box-sizing: border-box;
 }
 
 #projTitle{
