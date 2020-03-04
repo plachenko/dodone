@@ -110,7 +110,6 @@ export default class App extends Vue {
   private menu = 1;
   private clientID = process.env.VUE_APP_CLIENTID;
   private prioShow = false;
-  private prioStar = [];
 
   $refs!: {
     list: DDListShow;
@@ -281,11 +280,6 @@ export default class App extends Vue {
 
   public removeItem(k: number){
     this.projects[this.current].items.splice((this.projects[this.current].items.length - 1) - k, 1);
-  }
-
-  private starred(i: any){
-    // console.log(i);
-    this.prioStar.push(i);
   }
 
   private loginToGH(){
