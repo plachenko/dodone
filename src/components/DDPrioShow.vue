@@ -1,61 +1,28 @@
 <template>
-  <div id="projCont" v-if="project">
+  <div id="projCont">
     <!-- Projects -->
-
     <div id="projTitle">
-      <div style="width: 100%; float:left;">
-        <div v-if="titleRename">
-          <form style="float:left;" @submit.prevent="changeTitle">
-            <input id="titleInp" @blur.prevent="titleRename = false" ref="titleInp" v-model="titleName" type="text">
-            <div class="opt btn" id="textInpSubmit" @click="changeTitle">&#10004;</div>
-          </form>
-        </div>
-        <h2 v-else @click="renameTitle">{{project.title || "Untitled"}} </h2>
-      </div>
-      <span style="display: inline-block; border-top: 2px solid; padding-top: 6px; margin-top:5px;">Total time: {{formatTimeSpent(timeTotal)}}</span>
-      <div @click="showDone = !showDone" id="hideDone" class="btn">hide done</div>
-      <div @click="$emit('removeProject')" id="removeList" class="btn">remove</div>
+      <h2>Priorities</h2>
     </div>
 
-    <div id="projBtnCont">
-      <div v-if="project.title && !adding" @click="addListItem" id="add_list_itm" class="btn">+ Add List Item</div>
-      <div class="projItem" id="projInp" v-if="adding">
-        <form name="items" @submit.prevent="createItem()">
-          <input ref="inpi" class="inp" v-model="item" />
-        </form>
-        <div id="optContainer">
-          <div class="opt btn" @click="createItem()">&#10004;</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="projItemsContainer" v-if="project.items">
-      <div v-for="(d, key) in dateGroups" :key="key">
-        <div class="date_sep">
-          <div class="date_sep_border">
-            <span><strong>{{formatDate(d[0].date)}}</strong> ({{d.length}} items)</span>
-          </div>
-        </div>
-        <div :class="{started: i.started}" style="display: flex; flex-wrap: wrap;" v-for="(i, k) in d" :key="k">
-          <div class="btn rmbtn" @click="$emit('removeItem',i.idx)">X</div>
-          <div class="btn projInner" style="font-size: 2em; padding: 6px 0px 0px 10px; margin: 2px 2px 2px 0px; flex-basis: 1%;" @click="setPriority(i)">
-            <span v-if="i.star">&starf;</span>
-            <span v-else style="color: #AAA">&star;</span>
-          </div>
-          <div @click="setDone(i)" class="projItem btn" :class="{done: i.done}">
+    <div id="projItemsContainer" style="margin-top: 25px;">
+      <div v-for="(i, key) in items" :key="key" >
+        <div :class="{started: i.started}" style="display: flex; flex-wrap: wrap;">
+          <div @click="setDone(i)" class="projItem btn" style="border-radius:10px;" :class="{done: i.done}">
             <div class="circle">
               <div></div>
             </div>
             <span>{{i.txt}}</span>
           </div>
+          <!--
           <div class="btn projInner" @click="resetTime(i.idx)" v-if="!i.done && i.timeSpent && !i.started">
             <span>Reset</span>
           </div>
           <div :class="{doneT: i.done}" class="btn projStart" @click="start(i.idx)">
             <span>{{formatTimeSpent(i.timeSpent)}}</span>
           </div>
+          -->
         </div>
-
       </div>
     </div>
 
@@ -68,14 +35,14 @@ import moment from 'moment';
 import _ from 'lodash';
 
 @Component({})
-export default class DDListShow extends Vue{
+export default class DDPriohow extends Vue{
   $refs!: {
     inpi: HTMLInputElement;
     titleInp: HTMLInputElement;
   }
 
   @Prop()
-  project!: DDProject;
+  items!: DDProject[];
 
   @Prop()
   current!: number;
@@ -91,12 +58,6 @@ export default class DDListShow extends Vue{
   private titleRename = false;
   private titleName = "";
 
-
-  private setPriority(i: any){
-    i.star = !i.star;
-    this.$emit('starred', i);
-  }
-
   private addListItem(){
     this.adding = true;
     this.$nextTick(() => {
@@ -108,36 +69,13 @@ export default class DDListShow extends Vue{
     this.titleRename = false;
   }
 
-  get items(){
-    if(this.showDone){
-      return this.project.items.filter(i => i.done != true);
-    }else{
-      return this.project.items;
-    }
-  }
-
+  /*
   get dateGroups(){
     const arr = this.items.slice().reverse();
     arr.forEach((i, idx) => i.idx = idx);
     return _.groupBy(arr, (i: any) => moment(i.date).startOf('day').format())
   }
 
-  get timeTotal(){
-    let total = 0;
-    this.project.items.forEach((i) => {
-      total += i.timeSpent;
-    })
-
-    return total;
-  }
-
-  private renameTitle(){
-    this.titleName = this.project.title;
-    this.titleRename = true;
-    this.$nextTick(()=>{
-      this.$refs.titleInp.focus();
-    });
-  }
 
   private resetTime(k: number){
     const r = (this.items.length - 1) - k;
@@ -172,6 +110,7 @@ export default class DDListShow extends Vue{
   private formatDate(d: Date){
     return moment(d).format('MM/DD/YYYY');
   }
+  */
 
   private setDone(i: any){
     i.done = !i.done;

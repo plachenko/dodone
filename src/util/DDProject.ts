@@ -19,9 +19,15 @@ export default class DDProject{
     if(items.length){
       for(const i of items){
         i.started = false;
+
+        // Hacks to conform old data
+        if(typeof i.star == 'undefined'){
+          i.star = false;
+        }
         if(typeof i.timeSpent == 'undefined'){
           i.timeSpent = 0;
         }
+
       }
       this.items = items;
     }
@@ -48,6 +54,7 @@ export default class DDProject{
     const item = {
       txt: text,
       done: false,
+      star: false,
       started: false,
       timeSpent: 0,
       date: date

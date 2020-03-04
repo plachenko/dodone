@@ -15,12 +15,20 @@
         @searchEvt="search" />
 
       <div v-if="menu == 1" id="projListContainer" :class="{hide: !show}">
+        <div class="projectItem" style="background-color:#EEE; border-bottom: 2px solid;" @click="showPriorities" v-if="priorities.length">
+          <div class="inner" style="display:flex;">
+            <span class="proj_title" id="priority">Priority</span>
+            <span class="item_count" style="font-weight: bold; justify-self:center; padding-bottom:23px;">{{priorities.length}}</span>
+          </div>
+        </div>
+
         <DDProjItem
           @setTitle="setTitle($event)"
           @remove="removeProject()"
           @select="select(k)"
+          @starred="starred($event)"
           v-for="(project, k) in searchResult"
-          :current = "current == k"
+          :current="current == k"
           :class="{current: current == k}"
           :project="project"
           :key="k" />
@@ -43,8 +51,13 @@
     </div>
 
     <div id="right" :class="{hide: show}">
+      <DDPrioShow
+        v-if="menu == 1 && current < 0 && projects.length"
+        :items="priorities"
+        />
+
       <DDListShow
-        v-if="menu == 1"
+        v-if="menu == 1 && current >= 0"
         ref="list"
         :project="projects[current]"
         :current="current"
@@ -71,8 +84,10 @@ import DDSearch from './components/DDSearch.vue';
 import DDProjItem from './components/DDProjItem.vue';
 import DDItem from './components/DDProjItem.vue';
 import DDListShow from './components/DDListShow.vue';
+import DDPrioShow from './components/DDPrioShow.vue';
 
 import { EventBus }  from './eventbus';
+import _ from 'lodash';
 
 @Component({
   components:{
@@ -80,7 +95,8 @@ import { EventBus }  from './eventbus';
     DDSearch,
     DDProjItem,
     DDItem,
-    DDListShow
+    DDListShow,
+    DDPrioShow
   }
 })
 export default class App extends Vue {
@@ -93,6 +109,8 @@ export default class App extends Vue {
   private lastCur = 0;
   private menu = 1;
   private clientID = process.env.VUE_APP_CLIENTID;
+  private prioShow = false;
+  private prioStar = [];
 
   $refs!: {
     list: DDListShow;
@@ -103,7 +121,7 @@ export default class App extends Vue {
   }
 
   @Watch('projects', {deep: true})
-  private projChange(){
+  private projChange(v: DDProject[]){
     this.save();
   }
 
@@ -119,19 +137,48 @@ export default class App extends Vue {
     }
   }
 
+  get priorities(){
+    const arr = [];
+    let arr2 = [];
+    const f = this.projects;
+    for(let i = 0; i <= f.length-1; i++){
+      arr2 = f[i].items.filter(j => j.star == true);
+      if(arr2.length){
+        arr.push(arr2);
+      }
+    }
+
+    return _.flatMap(arr);
+    /*
+    if(this.projects){
+      const starmap = this.projects.map(i => i.items.some(e => e.star == true));
+      return starmap.some(e => e == true);
+    }else{
+      return false;
+    }
+    */
+  }
+
   get projectsWithTitle(){
     return this.projects.some(i => i.title.length)
   }
 
   get searchResult(){
-    return this.projects.filter((item: DDProject) => {
+    const arr = this.projects.filter((item: DDProject) => {
       return this.projSearch.toLowerCase().split(' ').every((i: string) => item.title.toLowerCase().includes(i));
     })
+
+    return arr;
+  }
+
+  public showPriorities(){
+    this.current = -1;
+    this.prioShow = true;
   }
 
   public startTicker(){
     setInterval(() =>{
-      if(this.projects.length){
+      if(this.projects.length && this.current >= 0){
         const startedEl = this.projects[this.current].items.find(i => i.started);
 
         if(startedEl){
@@ -164,7 +211,9 @@ export default class App extends Vue {
   public addProject(){
     this.adding = true;
 
-    this.$refs.list.reset();
+    if(this.current >=0){
+      this.$refs.list.reset();
+    }
 
     this.projSearch = "";
     const proj = new DDProject();
@@ -184,6 +233,9 @@ export default class App extends Vue {
 
   public load(){
     this.current = JSON.parse(localStorage.getItem('current') || "");
+    if(this.current < 0){
+      this.current = 0;
+    }
     const savedProjects = JSON.parse(localStorage.getItem('projects') || '{}');
     for(const proj of savedProjects){
       this.projects.push(new DDProject(proj.title, proj.items));
@@ -209,7 +261,12 @@ export default class App extends Vue {
   }
 
   public select(e: number){
-    this.$refs.list.reset();
+    if(!this.prioShow){
+      this.$refs.list.reset();
+    }else{
+      this.prioShow = false;
+    }
+
     if(this.adding){
       this.removeProject()
       this.adding = false;
@@ -224,6 +281,11 @@ export default class App extends Vue {
 
   public removeItem(k: number){
     this.projects[this.current].items.splice((this.projects[this.current].items.length - 1) - k, 1);
+  }
+
+  private starred(i: any){
+    // console.log(i);
+    this.prioStar.push(i);
   }
 
   private loginToGH(){
@@ -307,6 +369,11 @@ export default class App extends Vue {
       .projItem{
         flex-basis: 60%;
       }
+}
+
+#priority{
+  font-weight:bold;
+  width: 100%;
 }
 
 #projListContainer{
