@@ -37,7 +37,7 @@
       <div v-if="menu==2">
         <div class="projectItem">
           <!-- <div class="inner btn">Github</div> -->
-          <a :href="`https://github.com/login/oauth/authorize${clientID}${redirect}`" style="display: block;" class="inner btn" @click="loginToGH">Login to github</a>
+          <a :href="`https://github.com/login/oauth/authorize${clientID}`" style="display: block;" class="inner btn" @click="loginToGH">Login to github</a>
         </div>
       </div>
 
@@ -134,7 +134,7 @@ export default class App extends Vue {
     }
 
     if(this.redirect){
-      this.redirect = "?redirect_uri="+this.redirect;
+      this.redirect = "&redirect_uri="+this.redirect;
     }
 
     this.startTicker();
